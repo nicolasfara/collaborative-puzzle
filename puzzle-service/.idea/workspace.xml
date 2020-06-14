@@ -1,92 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="BranchesTreeState">
-    <expand>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-    </expand>
-    <select />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="446b491e-2dad-4b7f-955f-373c58e28d37" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../messages-service/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../pointer-service/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../messages-service/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../messages-service/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../messages-service/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../messages-service/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../messages-service/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../messages-service/settings.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/.gradle/6.1.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../player-service/.gradle/6.1.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/.gradle/6.1.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../player-service/.gradle/6.1.1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/.gradle/6.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../player-service/.gradle/6.1.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/.gradle/6.1.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../player-service/.gradle/6.1.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../player-service/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../player-service/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../player-service/.gradle/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/.gradle/checksums/md5-checksums.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/.gradle/checksums/sha1-checksums.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../player-service/.idea/gradle.xml" afterDir="false" />
+    <list default="true" id="342b1966-2975-412d-b8a2-6ba0250c3284" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../.idea/kotlinScripting.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/../gradlew" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../messages-service/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../messages-service/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../messages-service/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/../messages-service/gradlew" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../player-service/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../player-service/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../player-service/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../player-service/settings.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pointer-service/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pointer-service/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pointer-service/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pointer-service/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../pointer-service/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pointer-service/settings.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../puzzle-manager/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../puzzle-manager/.gradle/6.1.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../puzzle-manager/.gradle/6.1.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../puzzle-manager/.gradle/6.1.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../puzzle-manager/.gradle/6.1.1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../puzzle-manager/.gradle/6.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../puzzle-manager/.gradle/6.1.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../puzzle-manager/.gradle/6.1.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../puzzle-manager/.gradle/6.1.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../puzzle-manager/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../puzzle-manager/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../puzzle-manager/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../puzzle-manager/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../puzzle-manager/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../puzzle-manager/.gradle/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../puzzle-manager/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../puzzle-manager/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../puzzle-manager/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../puzzle-manager/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../puzzle-manager/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../puzzle-manager/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../puzzle-manager/settings.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../player-service/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/../player-service/gradlew" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pointer-service/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../pointer-service/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pointer-service/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/../pointer-service/gradlew" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../puzzle-manager/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../puzzle-manager/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../puzzle-manager/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/../puzzle-manager/gradlew" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HELP.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/it/unibo/pcd/puzzleservice/PuzzleServiceApplication.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/it/unibo/pcd/puzzleservice/PuzzleServiceApplicationTests.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scoring-service/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scoring-service/.gradle/6.1.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../scoring-service/.gradle/6.1.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scoring-service/.gradle/6.1.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../scoring-service/.gradle/6.1.1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scoring-service/.gradle/6.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../scoring-service/.gradle/6.1.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scoring-service/.gradle/6.1.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../scoring-service/.gradle/6.1.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scoring-service/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../scoring-service/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scoring-service/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../scoring-service/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scoring-service/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../scoring-service/.gradle/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scoring-service/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scoring-service/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scoring-service/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../scoring-service/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scoring-service/settings.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scoring-service/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/../scoring-service/gradlew" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,57 +45,44 @@
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="1" />
   </component>
-  <component name="ProjectId" id="1dH3Fpd5r9px7RcWZ5wsmX111ur" />
+  <component name="ProjectId" id="1dJqfFnpAUdaZEmiLP27qSpIXzY" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../messages-service" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="RunManager">
+    <configuration name="PuzzleServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="puzzle-service.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="it.unibo.pcd.puzzleservice.PuzzleServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="446b491e-2dad-4b7f-955f-373c58e28d37" name="Default Changelist" comment="" />
-      <created>1592068090269</created>
+      <changelist id="342b1966-2975-412d-b8a2-6ba0250c3284" name="Default Changelist" comment="" />
+      <created>1592153644084</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1592068090269</updated>
-      <workItem from="1592068092047" duration="543000" />
-      <workItem from="1592068642414" duration="78000" />
-      <workItem from="1592068735356" duration="346000" />
+      <updated>1592153644084</updated>
+      <workItem from="1592153649707" duration="63000" />
+      <workItem from="1592153731975" duration="21000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="2" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="1491" y="636" width="856" height="971" key="FileChooserDialogImpl" timestamp="1592068776859">
-      <screen x="0" y="50" width="3840" height="2110" />
-    </state>
-    <state x="1491" y="636" width="856" height="971" key="FileChooserDialogImpl/0.50.3840.2110@0.50.3840.2110" timestamp="1592068776859" />
-    <state x="650" y="292" key="new project wizard" timestamp="1592068295908">
-      <screen x="0" y="50" width="3840" height="2110" />
-    </state>
-    <state x="650" y="292" key="new project wizard/0.50.3840.2110@0.50.3840.2110" timestamp="1592068295908" />
   </component>
 </project>
