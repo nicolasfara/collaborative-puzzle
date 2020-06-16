@@ -29,7 +29,7 @@ class WebserverVerticle : CoroutineVerticle() {
         }
 
         router = Router.router(vertx)
-        routerManager = Routes(context)
+        routerManager = Routes(context,rabbitMQClient)
 
         router.get("/").handler(routerManager::entryPoint)
         router.get("/api/create_puzzle").handler(routerManager::createPuzzle)
