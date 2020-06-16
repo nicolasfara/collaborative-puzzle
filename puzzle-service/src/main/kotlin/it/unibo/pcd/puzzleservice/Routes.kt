@@ -16,16 +16,12 @@ import org.slf4j.LoggerFactory
 
 class Routes(private val ctx: Context, private val rabbitMQClient: RabbitMQClient) {
     private val logger = LoggerFactory.getLogger("Routes")
-    fun entryPoint(routingContext: RoutingContext) = baseHandler(routingContext) { params, coroutineScope ->
-        val message = JsonObject().put("body", "Hello RabbitMQ, from Vert.x !")
 
-        coroutineScope.launch {
-            try {
-                rabbitMQClient.basicPublishAwait("", "my.queue", message)
-            } catch (ex: Exception) {
-                logger.error("Unable to send message", ex.cause)
-            }
-        }
+    companion object {
+        private const val EXCHANGE_NAME = "collaborative.puzzle"
+    }
+
+    fun entryPoint(routingContext: RoutingContext) = baseHandler(routingContext) { _, _ ->
         val returnMessage = JsonObject().put("status", "ok")
         routingContext
                 .response()
@@ -42,10 +38,15 @@ class Routes(private val ctx: Context, private val rabbitMQClient: RabbitMQClien
             val playerId = params["player-id"]
         }
 
+        val message = JsonObject().put("body", Json.encodePrettily(JsonObject.mapFrom(args)))
+
+        coroutineScope.launch {
+            rabbitMQClient.basicPublishAwait(EXCHANGE_NAME, "puzzle.new", message)
+        }
+
         routingContext.response()
                 .putHeader("content-type", "application/json; charset=utf-8")
-                .end(Json.encodePrettily(args))
-
+                .end(Json.encodePrettily(message))
     }
 
     fun joinPuzzle(routingContext: RoutingContext) = baseHandler(routingContext) { params, _ ->
