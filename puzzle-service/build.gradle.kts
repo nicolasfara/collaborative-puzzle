@@ -20,6 +20,10 @@ dependencies {
         implementation("$this:vertx-lang-kotlin-coroutines:3.9.1")
     }
 
+    with("com.viartemev") {
+        implementation("$this:the-white-rabbit:0.0.6")
+    }
+
     with("org.slf4j") {
         implementation("$this:slf4j-api:1.7.30")
         implementation("$this:slf4j-simple:1.7.30")

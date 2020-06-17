@@ -1,27 +1,31 @@
 package it.unibo.pcd.puzzleservice
 
+import com.rabbitmq.client.Connection
+import com.viartemev.thewhiterabbit.channel.channel
+import com.viartemev.thewhiterabbit.channel.confirmChannel
+import com.viartemev.thewhiterabbit.channel.consume
+import com.viartemev.thewhiterabbit.channel.publish
 import io.vertx.core.Context
-import io.vertx.core.MultiMap
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.RoutingContext
-import io.vertx.kotlin.coroutines.dispatcher
-import io.vertx.kotlin.rabbitmq.basicPublishAwait
-import io.vertx.rabbitmq.RabbitMQClient
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import it.unibo.pcd.puzzleservice.util.Constants.NEW_PUZZLE_QUEUE
+import it.unibo.pcd.puzzleservice.util.Constants.NEW_PUZZLE_RES_QUEUE
+import it.unibo.pcd.puzzleservice.util.Constants.NEW_USER_QUEUE
+import it.unibo.pcd.puzzleservice.util.Constants.NEW_USER_RES_QUEUE
+import it.unibo.pcd.puzzleservice.util.Utils
+import it.unibo.pcd.puzzleservice.util.Utils.createMessage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
+import kotlin.coroutines.coroutineContext
 
 
-class Routes(private val ctx: Context, private val rabbitMQClient: RabbitMQClient) {
+class Routes(private val ctx: Context, private val rabbitConnection: Connection) {
     private val logger = LoggerFactory.getLogger("Routes")
 
-    companion object {
-        private const val EXCHANGE_NAME = "collaborative.puzzle"
-    }
-
-    fun entryPoint(routingContext: RoutingContext) = baseHandler(routingContext) { _, _ ->
+    suspend fun entryPoint(routingContext: RoutingContext) {
         val returnMessage = JsonObject().put("status", "ok")
         routingContext
                 .response()
@@ -30,40 +34,88 @@ class Routes(private val ctx: Context, private val rabbitMQClient: RabbitMQClien
 
     }
 
-    fun createPuzzle(routingContext: RoutingContext) = baseHandler(routingContext) { params, coroutineScope ->
+    suspend fun createPuzzle(routingContext: RoutingContext) {
+        val params = routingContext.request().params()
         val args = object {
-            val imageUrl = params["image-url"]
+            val imageurl = params["imageurl"]
             val rows = params["rows"]
             val cols = params["cols"]
-            val playerId = params["player-id"]
+        }
+        rabbitConnection.confirmChannel {
+            publish {
+                publishWithConfirmAsync(coroutineContext, createMessage(NEW_USER_QUEUE, ""))
+            }
+        }
+        var playerId = ""
+        rabbitConnection.channel {
+            consume(NEW_USER_RES_QUEUE) {
+                coroutineScope {
+                    withContext(Dispatchers.Default) {
+                        consumeMessageWithConfirm {
+                            playerId = JsonObject(String(it.body)).getString("player-id")
+                            logger.info("Response to create user: $playerId")
+                        }
+                    }
+                }
+            }
         }
 
-        val message = JsonObject().put("body", Json.encodePrettily(JsonObject.mapFrom(args)))
+        val newPuzzleMessage = JsonObject.mapFrom(args).put("player-id", playerId)
 
-        coroutineScope.launch {
-            rabbitMQClient.basicPublishAwait(EXCHANGE_NAME, "puzzle.new", message)
+        rabbitConnection.confirmChannel {
+            publish {
+                publishWithConfirmAsync(coroutineContext, createMessage(NEW_PUZZLE_QUEUE, newPuzzleMessage.encodePrettily()))
+            }
         }
-
-        routingContext.response()
-                .putHeader("content-type", "application/json; charset=utf-8")
-                .end(Json.encodePrettily(message))
+        rabbitConnection.channel {
+            consume(NEW_PUZZLE_RES_QUEUE) {
+                coroutineScope {
+                    withContext(Dispatchers.Default) {
+                        consumeMessageWithConfirm {
+                            logger.info("New puzzle create successfully")
+                            routingContext.response()
+                                    .putHeader("content-type", "application/json")
+                                    .end(String(it.body))
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    fun joinPuzzle(routingContext: RoutingContext) = baseHandler(routingContext) { params, _ ->
+    suspend fun joinPuzzle(routingContext: RoutingContext) {
+        val params = routingContext.request().params()
+        val puzzleId = params["puzzle_id"]
+
+        val player = Utils.getRandomString(8)
+        val newPlayerMessage = JsonObject().put("body", player)
+        val joinPuzzleMessage = JsonObject().put("body", puzzleId)
+
+        // TODO("Generate random user name and give back")
+        /*coroutineScope.launch(ctx.dispatcher()) {
+            rabbitMQClient.basicPublishAwait(EXCHANGE_NAME, "player.new", newPlayerMessage)
+            rabbitMQClient.basicPublishAwait(EXCHANGE_NAME, "puzzle.join", joinPuzzleMessage)
+            val joinResult = rabbitMQClient.basicConsumerAwait("puzzle")
+            joinResult.handler {
+                val res = JsonObject(it.body())
+                logger.info("Puzzle manager respond with: $res from ${it.envelope().routingKey()}")
+                routingContext.response()
+                        .putHeader("content-type", "application/json")
+                        .end(Json.encodePrettily(res))
+            }
+        }*/
+    }
+
+    suspend fun leavePuzzle(routingContext: RoutingContext) {
+        val params = routingContext.request().params()
         val args = object {
             val puzzleId = params["puzzle-id"]
             val playerId = params["player-id"]
         }
     }
 
-    fun leavePuzzle(routingContext: RoutingContext) = baseHandler(routingContext) { params, _ ->
-        val args = object {
-            val puzzleId = params["puzzle-id"]
-            val playerId = params["player-id"]
-        }
-    }
-
-    fun move(routingContext: RoutingContext) = baseHandler(routingContext) { params, _ ->
+    suspend fun move(routingContext: RoutingContext) {
+        val params = routingContext.request().params()
         val args = object {
             val puzzleId = params["puzzle-id"]
             val playerId = params["player-id"]
@@ -72,16 +124,10 @@ class Routes(private val ctx: Context, private val rabbitMQClient: RabbitMQClien
         }
     }
 
-    fun score(routingContext: RoutingContext) = baseHandler(routingContext) { params, _ ->
+    suspend fun score(routingContext: RoutingContext) {
+        val params = routingContext.request().params()
         val args = object {
             val playerId = params["player-id"]
-        }
-    }
-
-    private fun baseHandler(routingContext: RoutingContext, handler: (params: MultiMap, scope: CoroutineScope) -> Unit) {
-        GlobalScope.launch(ctx.dispatcher()) {
-            val params = routingContext.request().params()
-            handler(params, this)
         }
     }
 }
