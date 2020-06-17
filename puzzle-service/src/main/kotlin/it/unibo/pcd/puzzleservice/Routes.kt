@@ -9,6 +9,7 @@ import io.vertx.core.Context
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.RoutingContext
+import io.vertx.kotlin.coroutines.dispatcher
 import it.unibo.pcd.puzzleservice.util.Constants.NEW_PUZZLE_QUEUE
 import it.unibo.pcd.puzzleservice.util.Constants.NEW_PUZZLE_RES_QUEUE
 import it.unibo.pcd.puzzleservice.util.Constants.NEW_USER_QUEUE
@@ -49,12 +50,10 @@ class Routes(private val ctx: Context, private val rabbitConnection: Connection)
         var playerId = ""
         rabbitConnection.channel {
             consume(NEW_USER_RES_QUEUE) {
-                coroutineScope {
-                    withContext(Dispatchers.Default) {
-                        consumeMessageWithConfirm {
-                            playerId = JsonObject(String(it.body)).getString("player-id")
-                            logger.info("Response to create user: $playerId")
-                        }
+                withContext(ctx.dispatcher()) {
+                    consumeMessageWithConfirm {
+                        playerId = JsonObject(String(it.body)).getString("player-id")
+                        logger.info("Response to create user: $playerId")
                     }
                 }
             }
@@ -69,14 +68,12 @@ class Routes(private val ctx: Context, private val rabbitConnection: Connection)
         }
         rabbitConnection.channel {
             consume(NEW_PUZZLE_RES_QUEUE) {
-                coroutineScope {
-                    withContext(Dispatchers.Default) {
-                        consumeMessageWithConfirm {
-                            logger.info("New puzzle create successfully")
-                            routingContext.response()
-                                    .putHeader("content-type", "application/json")
-                                    .end(String(it.body))
-                        }
+                withContext(ctx.dispatcher()) {
+                    consumeMessageWithConfirm {
+                        logger.info("New puzzle create successfully")
+                        routingContext.response()
+                                .putHeader("content-type", "application/json")
+                                .end(String(it.body))
                     }
                 }
             }
