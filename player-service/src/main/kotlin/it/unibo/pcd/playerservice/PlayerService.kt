@@ -5,7 +5,7 @@ import io.vertx.core.Vertx
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-fun main(args: Array<String>) {
+fun main() {
     val logger: Logger = LoggerFactory.getLogger("verticle-launcher")
     val vertx = Vertx.vertx()
 
@@ -21,5 +21,6 @@ fun main(args: Array<String>) {
     with(DeploymentOptions()) {
         instances = 1
         deployVerticle("it.unibo.pcd.playerservice.verticles.PlayerVerticle")
+        deployVerticle("it.unibo.pcd.playerservice.verticles.DataPlayerVerticle")
     }
 }
