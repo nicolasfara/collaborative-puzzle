@@ -21,6 +21,7 @@ dependencies {
         implementation("$this:vertx-web:3.9.1")
         implementation("$this:vertx-rabbitmq-client:3.9.1")
         implementation("$this:vertx-lang-kotlin-coroutines:3.9.1")
+        implementation("$this:vertx-mongo-client:3.9.1")
     }
 
     with("com.viartemev") {
@@ -29,7 +30,6 @@ dependencies {
     with("io.github"){
         implementation ("$this.serpro69:kotlin-faker:$version")
     }
-
 
     with("org.slf4j") {
         implementation("$this:slf4j-api:1.7.30")
