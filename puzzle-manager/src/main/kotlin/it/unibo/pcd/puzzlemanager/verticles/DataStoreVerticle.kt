@@ -1,14 +1,14 @@
 package it.unibo.pcd.puzzlemanager.verticles
 
-import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
 import io.vertx.kotlin.coroutines.CoroutineVerticle
-import io.vertx.kotlin.ext.mongo.insertAwait
-import it.unibo.pcd.puzzlemanager.Constants
-import it.unibo.pcd.puzzlemanager.PuzzleDbManager
+import io.vertx.kotlin.ext.mongo.findAwait
+import it.unibo.pcd.puzzlemanager.utils.Constants
+import it.unibo.pcd.puzzlemanager.db.PuzzleDbManager
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
+import kotlin.math.log
 
 class DataStoreVerticle : CoroutineVerticle() {
     private lateinit var mongoClient: MongoClient
@@ -33,6 +33,60 @@ class DataStoreVerticle : CoroutineVerticle() {
 
                 val response = JsonObject().put("body", responseBody.encodePrettily())
                 it.reply(response.encodePrettily())
+            }
+        }
+
+        vertx.eventBus().localConsumer<String>(Constants.PUZZLE_JOIN_ADDRESS).handler {
+            val message = JsonObject(it.body())
+            logger.info("Join puzzle request: $message")
+            launch {
+                val find = JsonObject().put("_id", message.getString("puzzle-id"))
+                dbManager.joinPuzzle(find, message.getString("player-id")).ifPresentOrElse({ puzzleProp ->
+                    logger.info("Puzzle found")
+                    val res = JsonObject().put("body", puzzleProp.encodePrettily())
+                    it.reply(res.encodePrettily())
+                }, {
+                    logger.warn("No puzzle with given id: $find")
+                    val errorRes = JsonObject().put("status", "No puzzle exist with the given id")
+                    val res = JsonObject().put("body", errorRes.encodePrettily())
+                    it.reply(res.encodePrettily())
+                })
+            }
+        }
+
+        vertx.eventBus().localConsumer<String>(Constants.PUZZLE_LEAVE_ADDRESS).handler {
+            val message = JsonObject(it.body())
+            logger.info("Leave puzzle request: $message")
+            launch {
+                val find = JsonObject().put("_id", message.getString("puzzle-id"))
+                dbManager.leavePuzzle(find, message.getString("player-id")).ifPresentOrElse({ puzzleProp ->
+                    val res = JsonObject().put("body", puzzleProp.encodePrettily())
+                    it.reply(res.encodePrettily())
+                }, {
+                    logger.warn("Puzzle id or player not found")
+                    val errorMsg = JsonObject().put("status", "Puzzle id not found or player not found")
+                    val res = JsonObject().put("body", errorMsg.encodePrettily())
+                    it.reply(res.encodePrettily())
+                })
+            }
+        }
+
+        vertx.eventBus().localConsumer<String>(Constants.PUZZLE_SWAP_ADDRESS).handler {
+            val message = JsonObject(it.body())
+            logger.info("Swap puzzle request: $message")
+            launch {
+                val source = message.getString("source").toInt()
+                val destination = message.getString("destination").toInt()
+                val find = JsonObject().put("_id", message.getString("puzzle-id"))
+                dbManager.swapPuzzle(find, source, destination).ifPresentOrElse({ puzzleProp ->
+                    val res = JsonObject().put("body", puzzleProp.encodePrettily())
+                    it.reply(res.encodePrettily())
+                }, {
+                    logger.warn("Puzzle id or player not found")
+                    val errorMsg = JsonObject().put("status", "Puzzle id not found or player not found")
+                    val res = JsonObject().put("body", errorMsg.encodePrettily())
+                    it.reply(res.encodePrettily())
+                })
             }
         }
     }

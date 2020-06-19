@@ -1,4 +1,4 @@
-package it.unibo.pcd.puzzlemanager
+package it.unibo.pcd.puzzlemanager.utils
 
 object Constants {
     const val PUZZLE_NEW_QUEUE = "puzzle.new"
