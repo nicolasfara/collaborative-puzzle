@@ -33,14 +33,14 @@ class PlayerVerticle : CoroutineVerticle() {
         client.queueDeclareAwait(NEW_USER_RES_QUEUE, durable = true, exclusive = false, autoDelete = false)
 
         client.basicConsumerAwait(NEW_USER_QUEUE).handler {
-            logger.info("[Player-Service]-Receive message from Puzzle Service")
+            logger.info("Receive message from Puzzle Service")
 
-            val user = JsonObject().put("player-name", generateFakeName())
+            val user = JsonObject().put("playername", generateFakeName())
             launch {
                 val reply = awaitResult<Message<String>> { handler ->
                     vertx.eventBus().request(NEW_PLAYER, user.encodePrettily(), handler)
                 }
-                logger.info("[Player-Service]-Publish player-name: $reply")
+                logger.info("Publish playername: ${reply.body()}")
                 client.basicPublishAwait("", NEW_USER_RES_QUEUE, JsonObject(reply.body()))
             }
         }

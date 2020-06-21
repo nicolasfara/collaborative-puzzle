@@ -54,7 +54,7 @@ class PuzzleManagerVerticle : CoroutineVerticle() {
                 logger.info("Valid")
                 launch {
                     val reply = vertx.eventBus().requestAwait<String>(PUZZLE_NEW_ADDRESS, request.encodePrettily())
-                    logger.info("Communicate back puzzle-id")
+                    logger.info("Communicate back puzzleid")
                     resultOn(PUZZLE_NEW_RES_QUEUE, JsonObject(reply.body()))
                 }
             } else {

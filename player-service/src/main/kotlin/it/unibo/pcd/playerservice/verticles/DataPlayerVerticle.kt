@@ -6,6 +6,7 @@ import io.vertx.core.logging.LoggerFactory
 import io.vertx.ext.mongo.MongoClient
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.kotlin.coroutines.awaitResult
+import io.vertx.kotlin.ext.mongo.insertAwait
 import kotlinx.coroutines.launch
 
 class DataPlayerVerticle : CoroutineVerticle() {
@@ -19,13 +20,11 @@ class DataPlayerVerticle : CoroutineVerticle() {
 
         vertx.eventBus().localConsumer<String>(NEW_PLAYER).handler {
             val message = JsonObject(it.body())
-            logger.info("[Player-Service]-New message for new player: $message")
+            logger.info("New message for new player: $message")
             launch {
-
-                val playerId: String = awaitResult { h -> mongoClient.insert("Player", message, h) }
+                mongoClient.insertAwait("player", message)
                 val responseBody = JsonObject()
-                        .put("player-name", message.getValue("player-name"))
-                        .put("player-id", playerId)
+                        .put("playerid", message.getValue("playername"))
 
                 val playerMessage = JsonObject().put("body", responseBody.encodePrettily())
                 it.reply(playerMessage.encodePrettily())

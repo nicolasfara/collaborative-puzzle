@@ -11,7 +11,7 @@ import java.util.*
 class PuzzleDbManager(private val mongoClient: MongoClient) {
 
     suspend fun createNewPuzzle(params: JsonObject): String? {
-        val playerId = params.getString("player-id")
+        val playerId = params.getString("playerid")
         val rows = params.getString("rows").toInt()
         val cols = params.getString("cols").toInt()
         val puzzleState = JsonArray()
