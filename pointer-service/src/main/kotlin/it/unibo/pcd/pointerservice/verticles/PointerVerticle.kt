@@ -25,7 +25,6 @@ class PointerVerticle: CoroutineVerticle() {
     private val rabbitConfig = RabbitMQOptions()
     private lateinit var client: RabbitMQClient
 
-
     override suspend fun start() {
         rabbitConfig.uri = "amqp://guest:guest@loclahost"
         client = RabbitMQClient.create(vertx, config)
