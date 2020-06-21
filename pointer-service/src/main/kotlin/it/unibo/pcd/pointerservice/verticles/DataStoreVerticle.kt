@@ -22,26 +22,30 @@ class DataStoreVerticle: CoroutineVerticle() {
 
         vertx.eventBus().localConsumer<String>(Constants.NEW_POINTER_ADDRESS).handler {
             val message = JsonObject(it.body())
-            val query = message
+            logger.info("Pointer message: $message")
+            val query = message.copy()
             query.remove("pointer")
-            val update = JsonObject().put("\$set", JsonObject().put("pointer", message.getString("pointer")))
+            val pos = message.getString("pointer")
+            val update = JsonObject().put("\$set", JsonObject().put("pointer", pos))
             val option = UpdateOptions().setUpsert(true)
             launch {
                 val res = mongoClient.updateCollectionWithOptionsAwait("pointer", query, update, option)
                 if (res!!.docMatched > 0) {
                     logger.info("Update successfully new pointer position")
-                    val playerList = getPlayerPosition(message.getString("puzzle-id"))
-                    it.reply(JsonObject().put("position", playerList))
+                    val playerList = getPlayerPosition(message.getString("puzzleid"))
+                    it.reply(JsonObject().put("position", playerList).encodePrettily())
                 } else {
                     logger.warn("Error on insert new position into DB")
+                    val rep = JsonObject().put("status",  "error on insert into DB")
+                    it.reply(rep.encodePrettily())
                 }
             }
         }
     }
 
     private suspend fun getPlayerPosition(puzzleId: String): List<JsonObject> {
-        val query = JsonObject().put("puzzle-id", puzzleId)
+        val query = JsonObject().put("puzzleid", puzzleId)
         val res = mongoClient.findAwait("pointer", query)
-        return res.map { it.remove("puzzle-id") as JsonObject }
+        return res.onEach { it.remove("puzzleid") }
     }
 }

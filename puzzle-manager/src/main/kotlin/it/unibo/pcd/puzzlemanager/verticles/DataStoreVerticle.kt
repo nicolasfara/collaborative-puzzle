@@ -1,5 +1,6 @@
 package it.unibo.pcd.puzzlemanager.verticles
 
+import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
 import io.vertx.kotlin.coroutines.CoroutineVerticle
@@ -87,6 +88,21 @@ class DataStoreVerticle : CoroutineVerticle() {
                     val res = JsonObject().put("body", errorMsg.encodePrettily())
                     it.reply(res.encodePrettily())
                 })
+            }
+        }
+
+        vertx.eventBus().localConsumer<String>(Constants.POINTER_CHECK).handler {
+            val message = JsonObject(it.body())
+            launch {
+                val isInPuzzle = dbManager.isUserInPuzzle(message.getString("playerid"), message.getString("puzzleid"))
+                logger.info("Find: $isInPuzzle")
+                if (isInPuzzle) {
+                    val res = JsonObject().put("status", "ok")
+                    it.reply(res.encodePrettily())
+                } else {
+                    val res = JsonObject().put("status", "No puzzle or player found")
+                    it.reply(res.encodePrettily())
+                }
             }
         }
     }

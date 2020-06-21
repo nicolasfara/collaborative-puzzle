@@ -58,4 +58,11 @@ class PuzzleDbManager(private val mongoClient: MongoClient) {
             Optional.empty()
         }
     }
+
+    suspend fun isUserInPuzzle(playerid: String, puzzleid: String): Boolean {
+        val params = JsonObject().put("players", playerid).put("_id", puzzleid)
+        val playerList = mongoClient.findAwait("puzzle", params)
+        println(playerList)
+        return playerList.isNotEmpty()
+    }
 }

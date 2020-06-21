@@ -51,4 +51,11 @@ class JsonValidator {
         isValid = isValid && request.containsKey("destination")
         return isValid
     }
+
+    fun validateUserInPuzzle(requestJson: JsonObject): Boolean {
+        var isValid = true
+        isValid = isValid && requestJson.containsKey("playerid")
+        isValid = isValid && requestJson.containsKey("puzzleid")
+        return isValid
+    }
 }

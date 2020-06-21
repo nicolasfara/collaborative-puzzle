@@ -1,16 +1,15 @@
 package it.unibo.pcd.puzzlemanager.verticles
 
-import io.vertx.core.eventbus.Message
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.eventbus.requestAwait
 import io.vertx.kotlin.coroutines.CoroutineVerticle
-import io.vertx.kotlin.coroutines.awaitResult
 import io.vertx.kotlin.rabbitmq.basicConsumerAwait
 import io.vertx.kotlin.rabbitmq.basicPublishAwait
 import io.vertx.kotlin.rabbitmq.queueDeclareAwait
 import io.vertx.kotlin.rabbitmq.startAwait
 import io.vertx.rabbitmq.RabbitMQClient
 import io.vertx.rabbitmq.RabbitMQOptions
+import it.unibo.pcd.puzzlemanager.utils.Constants.POINTER_CHECK
 import it.unibo.pcd.puzzlemanager.utils.Constants.PUZZLE_JOIN_ADDRESS
 import it.unibo.pcd.puzzlemanager.utils.Constants.PUZZLE_JOIN_QUEUE
 import it.unibo.pcd.puzzlemanager.utils.Constants.PUZZLE_JOIN_RES_QUEUE
@@ -23,6 +22,8 @@ import it.unibo.pcd.puzzlemanager.utils.Constants.PUZZLE_NEW_RES_QUEUE
 import it.unibo.pcd.puzzlemanager.utils.Constants.PUZZLE_SWAP_ADDRESS
 import it.unibo.pcd.puzzlemanager.utils.Constants.PUZZLE_SWAP_QUEUE
 import it.unibo.pcd.puzzlemanager.utils.Constants.PUZZLE_SWAP_RES_QUEUE
+import it.unibo.pcd.puzzlemanager.utils.Constants.PUZZLE_WITH_USER_QUEUE
+import it.unibo.pcd.puzzlemanager.utils.Constants.PUZZLE_WITH_USER_RES_QUEUE
 import it.unibo.pcd.puzzlemanager.utils.JsonValidator
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
@@ -46,6 +47,8 @@ class PuzzleManagerVerticle : CoroutineVerticle() {
         client.queueDeclareAwait(PUZZLE_NEW_RES_QUEUE, durable = true, exclusive = false, autoDelete = false)
         client.queueDeclareAwait(PUZZLE_SWAP_QUEUE, durable = true, exclusive = false, autoDelete = false)
         client.queueDeclareAwait(PUZZLE_SWAP_RES_QUEUE, durable = true, exclusive = false, autoDelete = false)
+        client.queueDeclareAwait(PUZZLE_WITH_USER_QUEUE, durable = true, exclusive = false, autoDelete = false)
+        client.queueDeclareAwait(PUZZLE_WITH_USER_RES_QUEUE, durable = true, exclusive = false, autoDelete = false)
 
         client.basicConsumerAwait(PUZZLE_NEW_QUEUE).handler {
             val request = JsonObject(it.body())
@@ -116,6 +119,23 @@ class PuzzleManagerVerticle : CoroutineVerticle() {
                 val payloadError = JsonObject().put("status", "malformed input")
                 val payload = JsonObject().put("body", payloadError.encodePrettily())
                 launch { resultOn(PUZZLE_SWAP_RES_QUEUE, payload) }
+            }
+        }
+
+        client.basicConsumerAwait(PUZZLE_WITH_USER_QUEUE).handler {
+            val request = JsonObject(it.body())
+            logger.info("Check use in puzzle request")
+            if (validator.validateUserInPuzzle(request)) {
+                launch {
+                    val res = vertx.eventBus().requestAwait<String>(POINTER_CHECK, request.encodePrettily())
+                    val payload = JsonObject().put("body", res.body())
+                    resultOn(PUZZLE_WITH_USER_RES_QUEUE, payload)
+                }
+            } else {
+                logger.warn("User in puzzle request malformed")
+                val payloadError = JsonObject().put("status", "malformed input")
+                val payload = JsonObject().put("body", payloadError.encodePrettily())
+                launch { resultOn(PUZZLE_WITH_USER_RES_QUEUE, payload) }
             }
         }
     }
