@@ -159,8 +159,8 @@ class Routes(private val ctx: Context, private val rabbitConnection: Connection)
         val args = object {
             val puzzleid = params["puzzleid"]
             val playerid = params["playerid"]
-            val originCard = params["source"]
-            val destinationCard = params["destination"]
+            val source = params["source"]
+            val  destination = params["destination"]
         }
 
         rabbitConnection.confirmChannel {
