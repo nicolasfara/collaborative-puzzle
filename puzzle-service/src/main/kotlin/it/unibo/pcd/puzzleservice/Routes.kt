@@ -131,8 +131,8 @@ class Routes(private val ctx: Context, private val rabbitConnection: Connection)
     suspend fun leavePuzzle(routingContext: RoutingContext) {
         val params = routingContext.request().params()
         val args = object {
-            val puzzleId = params["puzzleid"]
-            val playerId = params["playerid"]
+            val puzzleid = params["puzzleid"]
+            val playerid = params["playerid"]
         }
         rabbitConnection.confirmChannel {
             publish {
