@@ -1,10 +1,7 @@
 package it.unibo.pcd.pointerservice.verticles
 
-import com.sun.org.apache.bcel.internal.Const
-import io.vertx.core.eventbus.Message
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.eventbus.requestAwait
-import io.vertx.kotlin.core.json.JsonArray
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.kotlin.rabbitmq.basicConsumerAwait
 import io.vertx.kotlin.rabbitmq.basicPublishAwait
