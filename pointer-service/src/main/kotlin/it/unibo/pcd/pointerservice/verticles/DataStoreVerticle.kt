@@ -6,7 +6,6 @@ import io.vertx.ext.mongo.UpdateOptions
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.kotlin.ext.mongo.findAwait
 import io.vertx.kotlin.ext.mongo.updateCollectionWithOptionsAwait
-import io.vertx.kotlin.ext.web.handler.graphql.apolloWSOptionsOf
 import it.unibo.pcd.pointerservice.utils.Constants
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
@@ -36,7 +35,7 @@ class DataStoreVerticle: CoroutineVerticle() {
                     it.reply(JsonObject().put("position", playerList).encodePrettily())
                 } else {
                     logger.warn("Error on insert new position into DB")
-                    val rep = JsonObject().put("status",  "error on insert into DB")
+                    val rep = JsonObject().put("status", "error on insert into DB")
                     it.reply(rep.encodePrettily())
                 }
             }
