@@ -10,7 +10,7 @@ import java.util.*
 
 class PuzzleDbManager(private val mongoClient: MongoClient) {
 
-    suspend fun createNewPuzzle(params: JsonObject): String? {
+    suspend fun createNewPuzzle(params: JsonObject): JsonObject {
         val playerid = params.getString("playerid")
         val rows = params.getString("rows").toInt()
         val cols = params.getString("cols").toInt()
@@ -24,7 +24,9 @@ class PuzzleDbManager(private val mongoClient: MongoClient) {
                 .put("state", puzzleState)
                 .put("complete", false)
 
-        return mongoClient.insertAwait("puzzle", document)
+        val puzzleid = mongoClient.insertAwait("puzzle", document)
+        document.put("puzzleid", puzzleid)
+        return document
     }
 
     suspend fun joinPuzzle(params: JsonObject, newPlayer: String): Optional<JsonObject> {

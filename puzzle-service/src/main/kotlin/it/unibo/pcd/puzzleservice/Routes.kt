@@ -7,11 +7,13 @@ import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.client.WebClient
 import io.vertx.kotlin.ext.web.client.sendAwait
 import io.vertx.kotlin.ext.web.client.sendJsonObjectAwait
+import io.vertx.kotlin.rabbitmq.basicPublishAwait
 import io.vertx.rabbitmq.RabbitMQClient
+import it.unibo.pcd.puzzleservice.util.Constants
 import org.slf4j.LoggerFactory
 
 
-class Routes(private val ctx: Context, private val rabbitConnection: RabbitMQClient, private val webClient: WebClient) {
+class Routes(private val ctx: Context, private val rabbitMQClient: RabbitMQClient, private val webClient: WebClient) {
     private val logger = LoggerFactory.getLogger("Routes")
 
     suspend fun entryPoint(routingContext: RoutingContext) {
@@ -98,6 +100,21 @@ class Routes(private val ctx: Context, private val rabbitConnection: RabbitMQCli
         routingContext.response()
                 .putHeader("content-type", "application/json")
                 .end(swapResJson.encode())
+    }
+
+    suspend fun pointerUpdate(routingContext: RoutingContext) {
+        val params = routingContext.request().params()
+        val args = object {
+            val playerid = params["playerid"]
+            val puzzleid = params["puzzleid"]
+            val pointer = params["pointer"]
+        }
+        logger.info("Pointer update request")
+        val payload = JsonObject().put("body", JsonObject.mapFrom(args).encode())
+        rabbitMQClient.basicPublishAwait(Constants.EXCHANGE_NAME, "pointer.update", payload)
+        routingContext.response()
+                .putHeader("content-type", "application/json")
+                .end(JsonObject.mapFrom(args).encode())
     }
 
     suspend fun score(routingContext: RoutingContext) {
