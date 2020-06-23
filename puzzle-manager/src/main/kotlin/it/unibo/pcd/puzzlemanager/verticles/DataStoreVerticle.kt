@@ -28,8 +28,8 @@ class DataStoreVerticle : CoroutineVerticle() {
                 val puzzleId = dbManager.createNewPuzzle(message)
                 logger.info("Add new puzzle to DB with ID: $puzzleId")
                 val responseBody = JsonObject()
-                        .put("player-id", message.getValue("player-id"))
-                        .put("puzzle-id", puzzleId)
+                        .put("playerid", message.getValue("playerid"))
+                        .put("puzzleid", puzzleId)
 
                 val response = JsonObject().put("body", responseBody.encodePrettily())
                 it.reply(response.encodePrettily())
@@ -40,8 +40,8 @@ class DataStoreVerticle : CoroutineVerticle() {
             val message = JsonObject(it.body())
             logger.info("Join puzzle request: $message")
             launch {
-                val find = JsonObject().put("_id", message.getString("puzzle-id"))
-                dbManager.joinPuzzle(find, message.getString("player-id")).ifPresentOrElse({ puzzleProp ->
+                val find = JsonObject().put("_id", message.getString("puzzleid"))
+                dbManager.joinPuzzle(find, message.getString("playerid")).ifPresentOrElse({ puzzleProp ->
                     logger.info("Puzzle found")
                     val res = JsonObject().put("body", puzzleProp.encodePrettily())
                     it.reply(res.encodePrettily())
@@ -58,8 +58,8 @@ class DataStoreVerticle : CoroutineVerticle() {
             val message = JsonObject(it.body())
             logger.info("Leave puzzle request: $message")
             launch {
-                val find = JsonObject().put("_id", message.getString("puzzle-id"))
-                dbManager.leavePuzzle(find, message.getString("player-id")).ifPresentOrElse({ puzzleProp ->
+                val find = JsonObject().put("_id", message.getString("puzzleid"))
+                dbManager.leavePuzzle(find, message.getString("playerid")).ifPresentOrElse({ puzzleProp ->
                     val res = JsonObject().put("body", puzzleProp.encodePrettily())
                     it.reply(res.encodePrettily())
                 }, {
@@ -77,7 +77,7 @@ class DataStoreVerticle : CoroutineVerticle() {
             launch {
                 val source = message.getString("source").toInt()
                 val destination = message.getString("destination").toInt()
-                val find = JsonObject().put("_id", message.getString("puzzle-id"))
+                val find = JsonObject().put("_id", message.getString("puzzleid"))
                 dbManager.swapPuzzle(find, source, destination).ifPresentOrElse({ puzzleProp ->
                     val res = JsonObject().put("body", puzzleProp.encodePrettily())
                     it.reply(res.encodePrettily())

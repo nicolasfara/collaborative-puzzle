@@ -50,7 +50,7 @@ class PuzzleDbManager(private val mongoClient: MongoClient) {
         val playersList = puzzle.getJsonArray("state").toMutableList()
         println("list: $playersList")
         Collections.swap(playersList, playersList.indexOf(source), playersList.indexOf(destination))
-        val updateParams = JsonObject().put("\$set", JsonObject().put("state", JsonArray().add(playersList)))
+        val updateParams = JsonObject().put("\$set", JsonObject().put("state", playersList))
         val res = mongoClient.updateCollectionAwait("puzzle", params, updateParams)
         return if (res!!.docMatched > 0) {
             Optional.of(mongoClient.findAwait("puzzle", params)[0])

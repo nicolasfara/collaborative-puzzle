@@ -14,8 +14,8 @@ class JsonValidator {
      */
     fun validateNewPuzzle(requestJson: JsonObject): Boolean {
         var isValid = true
-        isValid = isValid && requestJson.containsKey("player-id")
-        isValid = isValid && requestJson.containsKey("image-url")
+        isValid = isValid && requestJson.containsKey("playerid")
+        isValid = isValid && requestJson.containsKey("imageurl")
         isValid = isValid && requestJson.containsKey("rows")
         isValid = isValid && requestJson.containsKey("cols")
         return isValid
@@ -31,22 +31,22 @@ class JsonValidator {
      */
     fun validateJoinPuzzle(requestJson: JsonObject): Boolean {
         var isValid = true
-        isValid = isValid && requestJson.containsKey("player-id")
-        isValid = isValid && requestJson.containsKey("puzzle-id")
+        isValid = isValid && requestJson.containsKey("playerid")
+        isValid = isValid && requestJson.containsKey("puzzleid")
         return isValid
     }
 
     fun validateLeavePuzzle(request: JsonObject): Boolean {
         var isValid = true
-        isValid = isValid && request.containsKey("puzzle-id")
-        isValid = isValid && request.containsKey("player-id")
+        isValid = isValid && request.containsKey("puzzleid")
+        isValid = isValid && request.containsKey("playerid")
         return isValid
     }
 
     fun validateSwapPuzzle(request: JsonObject): Boolean {
         var isValid = true
-        isValid = isValid && request.containsKey("puzzle-id")
-        isValid = isValid && request.containsKey("player-id")
+        isValid = isValid && request.containsKey("puzzleid")
+        isValid = isValid && request.containsKey("playerid")
         isValid = isValid && request.containsKey("source")
         isValid = isValid && request.containsKey("destination")
         return isValid
