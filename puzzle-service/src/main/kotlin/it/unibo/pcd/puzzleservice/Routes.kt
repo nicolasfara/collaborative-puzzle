@@ -5,11 +5,15 @@ import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.client.WebClient
+import io.vertx.kotlin.core.json.get
+import io.vertx.kotlin.coroutines.dispatcher
 import io.vertx.kotlin.ext.web.client.sendAwait
 import io.vertx.kotlin.ext.web.client.sendJsonObjectAwait
 import io.vertx.kotlin.rabbitmq.basicPublishAwait
 import io.vertx.rabbitmq.RabbitMQClient
 import it.unibo.pcd.puzzleservice.util.Constants
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
 
@@ -30,41 +34,52 @@ class Routes(private val ctx: Context, private val rabbitMQClient: RabbitMQClien
      * puzzle-id and player-id.
      */
     suspend fun createPuzzle(routingContext: RoutingContext) {
-        val params = routingContext.request().params()
-        val args = object {
-            val imageurl = params["imageurl"]
-            val rows = params["rows"]
-            val cols = params["cols"]
+        routingContext.request().handler {
+            CoroutineScope(ctx.dispatcher()).launch {
+                val params = it.toJsonObject()
+                val args = object {
+                    val imageurl: String = params["imageurl"]
+                    val rows: String = params["rows"]
+                    val cols: String = params["cols"]
+                }
+
+                val newUserResult = webClient.get(8081, "localhost", "/api/new_user").sendAwait()
+                val userResultJson = newUserResult.bodyAsJsonObject()
+
+                val newPuzzleRequest = JsonObject.mapFrom(args).put("playerid", userResultJson.getString("playerid"))
+                val newPuzzleResult = webClient.post(8082, "localhost", "/api/new_puzzle")
+                        .sendJsonObjectAwait(newPuzzleRequest)
+
+                val newPuzzleResultJson = newPuzzleResult.bodyAsJsonObject()
+                routingContext.response()
+                        .putHeader("content-type", "application/json")
+                        .end(newPuzzleResultJson.encode())
+            }
         }
-
-        val newUserResult = webClient.get(8081, "localhost", "/api/new_user").sendAwait()
-        val userResultJson = newUserResult.bodyAsJsonObject()
-
-        val newPuzzleRequest = JsonObject.mapFrom(args).put("playerid", userResultJson.getString("playerid"))
-        val newPuzzleResult = webClient.post(8082, "localhost", "/api/new_puzzle")
-                .sendJsonObjectAwait(newPuzzleRequest)
-
-        val newPuzzleResultJson = newPuzzleResult.bodyAsJsonObject()
-        routingContext.response()
-                .putHeader("content-type", "application/json")
-                .end(newPuzzleResultJson.encode())
     }
 
+
+
     suspend fun joinPuzzle(routingContext: RoutingContext) {
-        val params = routingContext.request().params()
-        val puzzleid = params["puzzleid"]
+        routingContext.request().handler {
+            CoroutineScope(ctx.dispatcher()).launch {
+                val params = it.toJsonObject()
+                val puzzleid: String = params["puzzleid"]
 
-        val newUserResult = webClient.get(8081, "localhost", "/api/new_user").sendAwait()
-        val userResultJson = newUserResult.bodyAsJsonObject()
+                val newUserResult = webClient.get(8081, "localhost", "/api/new_user").sendAwait()
+                val userResultJson = newUserResult.bodyAsJsonObject()
 
-        val newPuzzleRequest = JsonObject().put("puzzleid", puzzleid).put("playerid", userResultJson.getString("playerid"))
-        val joinPuzzleRes = webClient.post(8082, "localhost", "/api/join_puzzle")
-                .sendJsonObjectAwait(newPuzzleRequest)
-        val joinPuzzleResJson = joinPuzzleRes.bodyAsJsonObject()
+                val newPuzzleRequest = JsonObject().put("puzzleid", puzzleid).put("playerid", userResultJson.getString("playerid"))
+                val joinPuzzleRes = webClient.post(8082, "localhost", "/api/join_puzzle")
+                        .sendJsonObjectAwait(newPuzzleRequest)
+                val joinPuzzleResJson = joinPuzzleRes.bodyAsJsonObject()
 
-        routingContext.response()
-                .putHeader("content-type", "application/json")
-                .end(joinPuzzleResJson.encode())
+                routingContext.response()
+                        .putHeader("content-type", "application/json")
+                        .end(joinPuzzleResJson.encode())
+            }
+        }
+
     }
 
     suspend fun leavePuzzle(routingContext: RoutingContext) {
@@ -85,21 +100,25 @@ class Routes(private val ctx: Context, private val rabbitMQClient: RabbitMQClien
     }
 
     suspend fun swap(routingContext: RoutingContext) {
-        val params = routingContext.request().params()
-        val args = object {
-            val puzzleid = params["puzzleid"]
-            val playerid = params["playerid"]
-            val source = params["source"]
-            val  destination = params["destination"]
-        }
+        routingContext.request().handler {
+            CoroutineScope(ctx.dispatcher()).launch {
+                val params = it.toJsonObject()
+                val args = object {
+                    val puzzleid: String = params["puzzleid"]
+                    val playerid: String = params["playerid"]
+                    val source: String = params["source"]
+                    val destination: String = params["destination"]
+                }
 
-        val swapRequest = JsonObject.mapFrom(args)
-        val swapRes = webClient.post(8082, "localhost", "/api/swap")
-                .sendJsonObjectAwait(swapRequest)
-        val swapResJson = swapRes.bodyAsJsonObject()
-        routingContext.response()
-                .putHeader("content-type", "application/json")
-                .end(swapResJson.encode())
+                val swapRequest = JsonObject.mapFrom(args)
+                val swapRes = webClient.post(8082, "localhost", "/api/swap")
+                        .sendJsonObjectAwait(swapRequest)
+                val swapResJson = swapRes.bodyAsJsonObject()
+                routingContext.response()
+                        .putHeader("content-type", "application/json")
+                        .end(swapResJson.encode())
+            }
+        }
     }
 
     suspend fun pointerUpdate(routingContext: RoutingContext) {

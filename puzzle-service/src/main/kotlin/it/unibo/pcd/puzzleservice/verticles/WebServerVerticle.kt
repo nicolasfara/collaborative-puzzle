@@ -45,10 +45,10 @@ class WebServerVerticle : CoroutineVerticle() {
         }
 
         router.get("/").coroutineHandler(routerManager::entryPoint)
-        router.get("/api/create_puzzle").coroutineHandler(routerManager::createPuzzle)
-        router.get("/api/join_puzzle").coroutineHandler(routerManager::joinPuzzle)
+        router.post("/api/create_puzzle").coroutineHandler(routerManager::createPuzzle)
+        router.post("/api/join_puzzle").coroutineHandler(routerManager::joinPuzzle)
         router.get("/api/leave_puzzle").coroutineHandler(routerManager::leavePuzzle)
-        router.get("/api/swap").coroutineHandler(routerManager::swap)
+        router.post("/api/swap").coroutineHandler(routerManager::swap)
         router.get("/api/score").coroutineHandler(routerManager::score)
         router.get("/api/pointer_update").coroutineHandler(routerManager::pointerUpdate)
 
