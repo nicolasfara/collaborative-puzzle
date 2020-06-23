@@ -1,15 +1,12 @@
 package it.unibo.pcd.puzzlemanager.verticles
 
-import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
 import io.vertx.kotlin.coroutines.CoroutineVerticle
-import io.vertx.kotlin.ext.mongo.findAwait
 import it.unibo.pcd.puzzlemanager.utils.Constants
 import it.unibo.pcd.puzzlemanager.db.PuzzleDbManager
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
-import kotlin.math.log
 
 class DataStoreVerticle : CoroutineVerticle() {
     private lateinit var mongoClient: MongoClient
@@ -31,9 +28,7 @@ class DataStoreVerticle : CoroutineVerticle() {
                 val responseBody = JsonObject()
                         .put("playerid", message.getValue("playerid"))
                         .put("puzzleid", puzzleId)
-
-                val response = JsonObject().put("body", responseBody.encodePrettily())
-                it.reply(response.encodePrettily())
+                it.reply(responseBody.encode())
             }
         }
 
@@ -44,13 +39,11 @@ class DataStoreVerticle : CoroutineVerticle() {
                 val find = JsonObject().put("_id", message.getString("puzzleid"))
                 dbManager.joinPuzzle(find, message.getString("playerid")).ifPresentOrElse({ puzzleProp ->
                     logger.info("Puzzle found")
-                    val res = JsonObject().put("body", puzzleProp.encodePrettily())
-                    it.reply(res.encodePrettily())
+                    it.reply(puzzleProp.encode())
                 }, {
                     logger.warn("No puzzle with given id: $find")
                     val errorRes = JsonObject().put("status", "No puzzle exist with the given id")
-                    val res = JsonObject().put("body", errorRes.encodePrettily())
-                    it.reply(res.encodePrettily())
+                    it.reply(errorRes.encode())
                 })
             }
         }
@@ -61,13 +54,11 @@ class DataStoreVerticle : CoroutineVerticle() {
             launch {
                 val find = JsonObject().put("_id", message.getString("puzzleid"))
                 dbManager.leavePuzzle(find, message.getString("playerid")).ifPresentOrElse({ puzzleProp ->
-                    val res = JsonObject().put("body", puzzleProp.encodePrettily())
-                    it.reply(res.encodePrettily())
+                    it.reply(puzzleProp.encode())
                 }, {
                     logger.warn("Puzzle id or player not found")
                     val errorMsg = JsonObject().put("status", "Puzzle id not found or player not found")
-                    val res = JsonObject().put("body", errorMsg.encodePrettily())
-                    it.reply(res.encodePrettily())
+                    it.reply(errorMsg.encode())
                 })
             }
         }
@@ -80,13 +71,11 @@ class DataStoreVerticle : CoroutineVerticle() {
                 val destination = message.getString("destination").toInt()
                 val find = JsonObject().put("_id", message.getString("puzzleid"))
                 dbManager.swapPuzzle(find, source, destination).ifPresentOrElse({ puzzleProp ->
-                    val res = JsonObject().put("body", puzzleProp.encodePrettily())
-                    it.reply(res.encodePrettily())
+                    it.reply(puzzleProp.encode())
                 }, {
                     logger.warn("Puzzle id or player not found")
                     val errorMsg = JsonObject().put("status", "Puzzle id not found or player not found")
-                    val res = JsonObject().put("body", errorMsg.encodePrettily())
-                    it.reply(res.encodePrettily())
+                    it.reply(errorMsg.encode())
                 })
             }
         }

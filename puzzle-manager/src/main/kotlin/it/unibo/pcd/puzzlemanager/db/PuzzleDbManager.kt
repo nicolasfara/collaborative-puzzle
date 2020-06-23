@@ -11,14 +11,16 @@ import java.util.*
 class PuzzleDbManager(private val mongoClient: MongoClient) {
 
     suspend fun createNewPuzzle(params: JsonObject): String? {
-        val playerId = params.getString("playerid")
+        val playerid = params.getString("playerid")
         val rows = params.getString("rows").toInt()
         val cols = params.getString("cols").toInt()
         val puzzleState = JsonArray()
         (0.until(rows*cols)).shuffled().forEach { puzzleState.add(it) } //Shuffle all puzzle cells
 
-        val document = params
-                .put("players", JsonArray().add(playerId))
+        val document = params.copy()
+        document.remove("playerid")
+        document.put("players", JsonArray().add(playerid))
+                .put("create_by", playerid)
                 .put("state", puzzleState)
                 .put("complete", false)
 
@@ -29,7 +31,7 @@ class PuzzleDbManager(private val mongoClient: MongoClient) {
         val updateParams = JsonObject().put("\$push", JsonObject().put("players", newPlayer))
         val queryRes = mongoClient.updateCollectionAwait("puzzle", params, updateParams)
         return if (queryRes!!.docMatched > 0) {
-            Optional.of(mongoClient.findAwait("puzzle", params)[0])
+            Optional.of(mongoClient.findAwait("puzzle", params)[0].put("playerid", newPlayer))
         } else {
             Optional.empty()
         }
