@@ -20,7 +20,7 @@ fun main(args: Array<String>) {
     }
     with(DeploymentOptions()) {
         instances = 1
-        deployVerticle("it.unibo.pcd.puzzleservice.verticles.WebserverVerticle")
+        deployVerticle("it.unibo.pcd.puzzleservice.verticles.WebServerVerticle")
     }
 }
 

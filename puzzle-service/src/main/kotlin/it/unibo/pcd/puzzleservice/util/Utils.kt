@@ -2,6 +2,7 @@ package it.unibo.pcd.puzzleservice.util
 
 import com.rabbitmq.client.MessageProperties
 import com.viartemev.thewhiterabbit.publisher.OutboundMessage
+import io.vertx.core.json.JsonObject
 
 object Utils {
     fun getRandomString(length: Int): String {
@@ -13,5 +14,9 @@ object Utils {
 
     fun createMessage(queue: String, message: String): List<OutboundMessage> {
         return listOf(OutboundMessage("", queue, MessageProperties.PERSISTENT_BASIC, message))
+    }
+
+    fun sendToQueue(message: JsonObject): JsonObject {
+        return JsonObject().put("body", message.encode())
     }
 }

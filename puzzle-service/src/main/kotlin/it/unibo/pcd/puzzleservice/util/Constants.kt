@@ -1,7 +1,6 @@
 package it.unibo.pcd.puzzleservice.util
 
 object Constants {
-    const val EXCHANGE_NAME = "collaborative.puzzle"
     const val NEW_PUZZLE_QUEUE = "puzzle.new"
     const val NEW_PUZZLE_RES_QUEUE = "puzzle.new.result"
     const val JOIN_PUZZLE_QUEUE = "puzzle.join"
@@ -17,4 +16,7 @@ object Constants {
     const val POSITION_POINTER_QUEUE = "pointer.position"
     const val UPDATE_POINTER_QUEUE = "pointer.update"
     const val LOGGING_QUEUE = "log"
+    const val POINTER_UPDATE_QUEUE = "pointer.update"
+
+    const val POINTER_UPDATE_ADDRESS = "pointer.update"
 }
