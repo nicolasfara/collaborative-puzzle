@@ -52,7 +52,7 @@ public class FrameController extends JFrame {
                     );
                     puzzle.setVisible(true);
                     dispose();
-                } catch (IOException | InterruptedException | URISyntaxException ioException) {
+                } catch (IOException | InterruptedException  ioException) {
                     ioException.printStackTrace();
                 }
             }
@@ -77,7 +77,7 @@ public class FrameController extends JFrame {
                             result.get("cols").getAsInt(),
                             result.get("imageurl").getAsString(),
                             result.get("playerid").getAsString(),
-                            result.get("puzzleid").getAsString()
+                            result.get("_id").getAsString()
                     );
                     puzzle.setVisible(true);
                     dispose();
