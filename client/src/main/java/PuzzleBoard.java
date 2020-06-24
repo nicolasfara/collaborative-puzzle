@@ -1,3 +1,5 @@
+import com.google.gson.JsonArray;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -11,12 +13,14 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SuppressWarnings("serial")
 public class PuzzleBoard extends JFrame {
 	
 	final int rows, columns;
+	private JsonArray currentState;
 	private List<Tile> tiles = new ArrayList<>();
 	
 	private SelectionManager selectionManager = new SelectionManager();
@@ -25,10 +29,12 @@ public class PuzzleBoard extends JFrame {
                        final int columns,
                        final String imagePath,
                        final String playerid,
-                       final String puzzleid) throws IOException {
+                       final String puzzleid,
+                       final JsonArray state) throws IOException {
     	this.rows = rows;
 		this.columns = columns;
-    	
+		this.currentState = state;
+
     	setTitle("Puzzle");
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,7 +74,8 @@ public class PuzzleBoard extends JFrame {
         try {
             image = ImageIO.read(url);
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Could not load image", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Could not load image", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -76,11 +83,11 @@ public class PuzzleBoard extends JFrame {
         final int imageHeight = image.getHeight(null);
 
         int position = 0;
-        
-        final List<Integer> randomPositions = new ArrayList<>();
-        IntStream.range(0, rows*columns).forEach(item -> { randomPositions.add(item); });
-        Collections.shuffle(randomPositions);
-        
+
+        final List<Integer> randomPositions = IntStream.range(0,currentState.size())
+                .mapToObj(i->currentState.get(i)
+                        .getAsInt()).collect(Collectors.toList());
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
             	final Image imagePortion = createImage(new FilteredImageSource(image.getSource(),

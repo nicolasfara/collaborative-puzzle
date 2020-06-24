@@ -48,7 +48,8 @@ public class FrameController extends JFrame {
                     final PuzzleBoard puzzle = new PuzzleBoard(
                          Integer.parseInt(rowImage), Integer.parseInt(colImage), urlImage,
                             result.get("playerid").getAsString(),
-                            result.get("puzzleid").getAsString()
+                            result.get("puzzleid").getAsString(),
+                            result.get("state").getAsJsonArray()
                     );
                     puzzle.setVisible(true);
                     dispose();
@@ -77,7 +78,8 @@ public class FrameController extends JFrame {
                             result.get("cols").getAsInt(),
                             result.get("imageurl").getAsString(),
                             result.get("playerid").getAsString(),
-                            result.get("_id").getAsString()
+                            result.get("_id").getAsString(),
+                            result.get("state").getAsJsonArray()
                     );
                     puzzle.setVisible(true);
                     dispose();
