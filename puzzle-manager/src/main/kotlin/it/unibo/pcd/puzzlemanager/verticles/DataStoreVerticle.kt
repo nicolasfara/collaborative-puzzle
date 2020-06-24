@@ -23,11 +23,10 @@ class DataStoreVerticle : CoroutineVerticle() {
             val message = JsonObject(it.body())
             logger.info("New message for new puzzle: $message")
             launch {
-                val puzzleId = dbManager.createNewPuzzle(message)
-                logger.info("Add new puzzle to DB with ID: $puzzleId")
-                val responseBody = JsonObject()
+                val response = dbManager.createNewPuzzle(message)
+                logger.info("Add new puzzle to DB with ID: $response")
+                val responseBody = response
                         .put("playerid", message.getValue("playerid"))
-                        .put("puzzleid", puzzleId)
                 it.reply(responseBody.encode())
             }
         }
