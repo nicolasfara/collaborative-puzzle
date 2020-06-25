@@ -1,21 +1,39 @@
 package it.unibo.pcd.puzzleservice.verticles
 
+import io.vertx.core.buffer.Buffer
+import io.vertx.core.json.JsonObject
+import io.vertx.ext.bridge.BridgeEventType
+import io.vertx.ext.bridge.BridgeOptions
+import io.vertx.ext.bridge.PermittedOptions
 import io.vertx.ext.web.Route
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.client.WebClient
+import io.vertx.ext.web.handler.sockjs.BridgeEvent
+import io.vertx.ext.web.handler.sockjs.SockJSBridgeOptions
+import io.vertx.ext.web.handler.sockjs.SockJSHandler
+import io.vertx.kotlin.core.eventbus.requestAwait
 import io.vertx.kotlin.core.http.listenAwait
+import io.vertx.kotlin.core.http.writeTextMessageAwait
+import io.vertx.kotlin.core.json.get
+import io.vertx.kotlin.core.shareddata.getAsyncMapAwait
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.kotlin.coroutines.dispatcher
-import io.vertx.kotlin.rabbitmq.*
+import io.vertx.kotlin.rabbitmq.basicConsumerAwait
+import io.vertx.kotlin.rabbitmq.queueBindAwait
+import io.vertx.kotlin.rabbitmq.queueDeclareAwait
+import io.vertx.kotlin.rabbitmq.startAwait
 import io.vertx.rabbitmq.RabbitMQClient
 import io.vertx.rabbitmq.RabbitMQOptions
 import it.unibo.pcd.puzzleservice.Routes
 import it.unibo.pcd.puzzleservice.util.Constants.EXCHANGE_NAME
 import it.unibo.pcd.puzzleservice.util.Constants.POINTER_QUEUE
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.logging.Handler
+
 
 class WebServerVerticle : CoroutineVerticle() {
     private val logger: Logger = LoggerFactory.getLogger(WebServerVerticle::class.java)
@@ -24,6 +42,7 @@ class WebServerVerticle : CoroutineVerticle() {
     private lateinit var router: Router
     private lateinit var routerManager: Routes
     private lateinit var rabbitMQClient: RabbitMQClient
+    private val wsMap: MutableMap<String, MutableSet<String>> = mutableMapOf()
 
     override suspend fun start() {
         logger.info("started")
@@ -41,7 +60,12 @@ class WebServerVerticle : CoroutineVerticle() {
         rabbitMQClient.queueBindAwait(POINTER_QUEUE, EXCHANGE_NAME, "pointer.status")
 
         rabbitMQClient.basicConsumerAwait(POINTER_QUEUE).handler {
+            val res = JsonObject(it.body())
+            val puzzleid: String = res["puzzleid"]
             logger.info("New update status for pointer")
+            wsMap["puzzle.id.$puzzleid"]?.forEach { elem ->
+                vertx.eventBus().publish(elem, "")
+            }
         }
 
         router.get("/").coroutineHandler(routerManager::entryPoint)
@@ -53,6 +77,14 @@ class WebServerVerticle : CoroutineVerticle() {
         router.get("/api/pointer_update").coroutineHandler(routerManager::pointerUpdate)
 
         vertx.createHttpServer()
+                .webSocketHandler {
+                    CoroutineScope(context.dispatcher()).launch {
+                        val wsId = it.textHandlerID()
+                        val puzzleid = it.path().substringAfter("/puzzle/")
+                        logger.info("New websocket connection at path: $puzzleid with id: $wsId")
+                        wsMap.putIfAbsent("puzzle.id.$puzzleid", mutableSetOf(wsId))?.add(wsId)
+                    }
+                }
                 .requestHandler(router)
                 .listenAwait(8080, "localhost")
     }
