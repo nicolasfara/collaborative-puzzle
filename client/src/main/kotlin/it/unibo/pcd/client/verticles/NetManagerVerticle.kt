@@ -6,6 +6,11 @@ import io.vertx.ext.web.client.WebClient
 import io.vertx.kotlin.core.http.webSocketAwait
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.kotlin.coroutines.dispatcher
+import io.vertx.kotlin.ext.web.client.sendJsonAwait
+import it.unibo.pcd.client.utils.Constants.CREATE_ADDRESS
+import it.unibo.pcd.client.utils.Constants.CREATE_URI
+import it.unibo.pcd.client.utils.Constants.JOIN_ADDRESS
+import it.unibo.pcd.client.utils.Constants.JOIN_URI
 import it.unibo.pcd.client.utils.Constants.POINTER_ADDRESS
 import it.unibo.pcd.client.utils.Constants.POINTER_WS_URI
 import it.unibo.pcd.client.utils.Constants.PUZZLE_WS_URI
@@ -35,6 +40,22 @@ class NetManagerVerticle(private val puzzleid: String, private val playerid: Str
                     .sendJson(swapMessage) {
                         logger.info("Response to swap")
                     }
+        }
+
+        vertx.eventBus().localConsumer<String>(CREATE_ADDRESS).handler { message ->
+            val newPuzzleMessage = JsonObject(message.body())
+            CoroutineScope(context.dispatcher()).launch {
+                val result = webClient.post(CREATE_URI).sendJsonAwait(newPuzzleMessage)
+                message.reply(result.bodyAsJsonObject().encode())
+            }
+        }
+
+        vertx.eventBus().localConsumer<String>(JOIN_ADDRESS).handler { message ->
+            val joinPuzzleMessage = JsonObject(message.body())
+            CoroutineScope(context.dispatcher()).launch {
+                val result = webClient.post(JOIN_URI).sendJsonAwait(joinPuzzleMessage)
+                message.reply(result.bodyAsJsonObject().encode())
+            }
         }
 
         wsClient.webSocketAwait(8080, "localhost", PUZZLE_WS_URI + puzzleid).handler {

@@ -2,11 +2,15 @@ package it.unibo.pcd.client.utils
 
 object Constants {
     // EventBus addresses
+    const val CREATE_ADDRESS = "create.puzzle"
+    const val JOIN_ADDRESS = "join.puzzle"
     const val SWAP_ADDRESS = "swap"
     const val UPDATE_STATE_ADDRESS = "update.state"
     const val POINTER_ADDRESS = "pointer"
 
     // Web client URI
+    const val CREATE_URI = "http://localhost:8080/api/create_puzzle"
+    const val JOIN_URI = "http://localhost:8080/api/join_puzzle"
     const val SWAP_URI = "http://localhost:8080/api/swap"
 
     // WebSocket URI
