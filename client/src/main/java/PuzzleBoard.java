@@ -22,6 +22,8 @@ public class PuzzleBoard extends JFrame {
 	final int rows, columns;
 	private JsonArray currentState;
 	private List<Tile> tiles = new ArrayList<>();
+    final JLabel playerId = new JLabel();
+    final JLabel puzzleId = new JLabel();
 	
 	private SelectionManager selectionManager = new SelectionManager();
 	
@@ -46,9 +48,10 @@ public class PuzzleBoard extends JFrame {
         final JPanel info = new JPanel();
         info.setLayout(new GridLayout(2,2));
         final JLabel playerIdLabel = new JLabel("PlayerID:");
-        final JLabel playerId = new JLabel(playerid);
+        playerId.setText(playerid);
         final JLabel puzzleIdLabel = new JLabel("PuzzleID:");
-        final JLabel puzzleId = new JLabel(puzzleid);
+
+        puzzleId.setText(puzzleid);
         info.add(playerIdLabel);
         info.add(playerId);
         info.add(puzzleIdLabel);
@@ -112,10 +115,16 @@ public class PuzzleBoard extends JFrame {
             board.add(btn);
             btn.setBorder(BorderFactory.createLineBorder(Color.gray));
             btn.addActionListener(actionListener -> {
-            	selectionManager.selectTile(tile, () -> {
-            		paintPuzzle(board);
-                	checkSolution();
-            	});
+                try {
+                    selectionManager.selectTile(tile, puzzleId.getText(), playerId.getText(), () -> {
+                        paintPuzzle(board);
+                        checkSolution();
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             });
     	});
     	
