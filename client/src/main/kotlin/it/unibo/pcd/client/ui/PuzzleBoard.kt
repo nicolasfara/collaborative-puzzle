@@ -2,6 +2,7 @@ package it.unibo.pcd.client.ui
 
 
 import io.vertx.core.json.JsonArray
+import io.vertx.core.json.JsonObject
 import it.unibo.pcd.client.controller.ViewController
 import java.awt.BorderLayout
 import java.awt.Color
@@ -120,10 +121,18 @@ class PuzzleBoard(private val rows: Int,
             setLocationRelativeTo(null)
         })
     }
-//    private fun checkSolution() {
+
+    //    private fun checkSolution() {
 //        if (tiles.stream().allMatch { obj: Tile -> obj.isInRightPlace() }) {
 //            JOptionPane.showMessageDialog(this, "Puzzle Completed!", "", JOptionPane.INFORMATION_MESSAGE)
 //        }
 //    }
+    fun repaintPuzzle(newState: JsonObject) {
+        //TODO
+        /*Function call when other player swap puzzle*/
+        SwingUtilities.invokeLater(kotlinx.coroutines.Runnable {
+            
+        })
+    }
 
 }
