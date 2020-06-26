@@ -17,6 +17,10 @@ dependencies {
         implementation("$this:vertx-lang-kotlin-coroutines:3.9.1")
         implementation("$this:vertx-web-client:3.9.1")
     }
+    with("org.slf4j") {
+        implementation("$this:slf4j-api:1.7.30")
+        implementation("$this:slf4j-simple:1.7.30")
+    }
 }
 
 tasks {
