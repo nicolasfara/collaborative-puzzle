@@ -1,3 +1,4 @@
+package it.unibo.pcd.client;
 
 import com.google.gson.JsonObject;
 import javax.swing.*;

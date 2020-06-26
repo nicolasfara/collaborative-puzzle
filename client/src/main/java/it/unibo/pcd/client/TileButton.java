@@ -1,3 +1,5 @@
+package it.unibo.pcd.client;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;

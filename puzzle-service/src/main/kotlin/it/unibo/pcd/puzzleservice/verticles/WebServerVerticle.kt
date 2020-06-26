@@ -33,7 +33,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.logging.Handler
 
 
 class WebServerVerticle : CoroutineVerticle() {

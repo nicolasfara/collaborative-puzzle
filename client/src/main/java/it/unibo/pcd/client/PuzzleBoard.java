@@ -1,3 +1,5 @@
+package it.unibo.pcd.client;
+
 import com.google.gson.JsonArray;
 
 import javax.imageio.ImageIO;

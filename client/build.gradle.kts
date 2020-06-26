@@ -11,9 +11,10 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("com.google.code.gson:gson:2.8.6")
-    implementation("io.vertx:vertx-web:3.9.1")
-    implementation("io.vertx:vertx-web-client:3.9.1")
+    with("io.vertx") {
+        implementation("$this:vertx-core:3.9.1")
+        implementation("$this:vertx-web-client:3.9.1")
+    }
 }
 
 tasks {

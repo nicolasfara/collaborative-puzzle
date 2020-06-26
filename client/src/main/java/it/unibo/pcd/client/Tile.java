@@ -1,3 +1,5 @@
+package it.unibo.pcd.client;
+
 import java.awt.*;
 
 class Tile implements Comparable<Tile> {

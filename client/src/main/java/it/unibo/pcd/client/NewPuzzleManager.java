@@ -1,3 +1,4 @@
+package it.unibo.pcd.client;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
