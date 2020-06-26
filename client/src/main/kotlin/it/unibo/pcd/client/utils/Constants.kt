@@ -9,9 +9,9 @@ object Constants {
     const val POINTER_ADDRESS = "pointer"
 
     // Web client URI
-    const val CREATE_URI = "http://localhost:8080/api/create_puzzle"
-    const val JOIN_URI = "http://localhost:8080/api/join_puzzle"
-    const val SWAP_URI = "http://localhost:8080/api/swap"
+    const val CREATE_URI = "/api/create_puzzle"
+    const val JOIN_URI = "/api/join_puzzle"
+    const val SWAP_URI = "/api/swap"
 
     // WebSocket URI
     const val PUZZLE_WS_URI = "/puzzle/"
