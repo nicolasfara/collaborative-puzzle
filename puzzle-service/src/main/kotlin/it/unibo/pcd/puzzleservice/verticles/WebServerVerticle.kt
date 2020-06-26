@@ -28,6 +28,7 @@ import io.vertx.rabbitmq.RabbitMQOptions
 import it.unibo.pcd.puzzleservice.Routes
 import it.unibo.pcd.puzzleservice.util.Constants.EXCHANGE_NAME
 import it.unibo.pcd.puzzleservice.util.Constants.POINTER_QUEUE
+import it.unibo.pcd.puzzleservice.util.Constants.SWAP
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.slf4j.Logger
@@ -43,6 +44,7 @@ class WebServerVerticle : CoroutineVerticle() {
     private lateinit var routerManager: Routes
     private lateinit var rabbitMQClient: RabbitMQClient
     private val wsMap: MutableMap<String, MutableSet<String>> = mutableMapOf()
+    private val swapMap: MutableMap<String, MutableSet<Pair<Int,Int>>> = mutableMapOf()
 
     override suspend fun start() {
         logger.info("started")
@@ -56,15 +58,20 @@ class WebServerVerticle : CoroutineVerticle() {
         router = Router.router(vertx)
         routerManager = Routes(context, rabbitMQClient, webClient)
 
+        rabbitMQClient.queueDeclareAwait(SWAP, durable = true, autoDelete = false, exclusive = false)
         rabbitMQClient.queueDeclareAwait(POINTER_QUEUE, durable = true, autoDelete = false, exclusive = false)
         rabbitMQClient.queueBindAwait(POINTER_QUEUE, EXCHANGE_NAME, "pointer.status")
 
         rabbitMQClient.basicConsumerAwait(POINTER_QUEUE).handler {
+
+        }
+
+        rabbitMQClient.basicConsumerAwait(SWAP).handler {
             val res = JsonObject(it.body())
             val puzzleid: String = res["puzzleid"]
             logger.info("New update status for pointer")
             wsMap["puzzle.id.$puzzleid"]?.forEach { elem ->
-                vertx.eventBus().publish(elem, "")
+                vertx.eventBus().publish(elem, res.encode())
             }
         }
 
@@ -83,6 +90,9 @@ class WebServerVerticle : CoroutineVerticle() {
                         val puzzleid = it.path().substringAfter("/puzzle/")
                         logger.info("New websocket connection at path: $puzzleid with id: $wsId")
                         wsMap.putIfAbsent("puzzle.id.$puzzleid", mutableSetOf(wsId))?.add(wsId)
+//                        val swap = it.path().substringAfter("/swap/")
+//                        logger.info("New websocket connection with swap: $swap")
+//                        swapMap[wsId] = mutableSetOf(Pair(swap.toInt(),swap.toInt()))
                     }
                 }
                 .requestHandler(router)

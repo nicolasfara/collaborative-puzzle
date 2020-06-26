@@ -18,4 +18,6 @@ object Constants {
     const val PUZZLE_LEAVE_ADDRESS = "puzzle.leave"
     const val PUZZLE_SWAP_ADDRESS = "puzzle.swap"
     const val POINTER_CHECK = "pointer"
+
+    const val SWAP = "swap"
 }
