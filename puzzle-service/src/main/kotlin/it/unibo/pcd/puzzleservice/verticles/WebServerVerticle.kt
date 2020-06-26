@@ -63,7 +63,8 @@ class WebServerVerticle : CoroutineVerticle() {
         rabbitMQClient.queueBindAwait(POINTER_QUEUE, EXCHANGE_NAME, "pointer.status")
 
         rabbitMQClient.basicConsumerAwait(POINTER_QUEUE).handler {
-
+            val message = JsonObject(it.body())
+            logger.info("Pointer update: $message")
         }
 
         rabbitMQClient.basicConsumerAwait(SWAP).handler {
@@ -90,9 +91,6 @@ class WebServerVerticle : CoroutineVerticle() {
                         val puzzleid = it.path().substringAfter("/puzzle/")
                         logger.info("New websocket connection at path: $puzzleid with id: $wsId")
                         wsMap.putIfAbsent("puzzle.id.$puzzleid", mutableSetOf(wsId))?.add(wsId)
-//                        val swap = it.path().substringAfter("/swap/")
-//                        logger.info("New websocket connection with swap: $swap")
-//                        swapMap[wsId] = mutableSetOf(Pair(swap.toInt(),swap.toInt()))
                     }
                 }
                 .requestHandler(router)

@@ -29,7 +29,7 @@ class DataStoreVerticle: CoroutineVerticle() {
             val option = UpdateOptions().setUpsert(true)
             launch {
                 val res = mongoClient.updateCollectionWithOptionsAwait("pointer", query, update, option)
-                if (res!!.docMatched > 0) {
+                if (res!!.docModified > 0) {
                     logger.info("Update successfully new pointer position")
                     val playerList = getPlayerPosition(message.getString("puzzleid"))
                     it.reply(JsonObject().put("position", playerList).encodePrettily())
