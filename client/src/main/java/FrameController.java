@@ -1,7 +1,5 @@
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import netscape.javascript.JSObject;
 
+import com.google.gson.JsonObject;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -53,6 +51,7 @@ public class FrameController extends JFrame {
                     );
                     puzzle.setVisible(true);
                     dispose();
+
                 } catch (IOException | InterruptedException  ioException) {
                     ioException.printStackTrace();
                 }

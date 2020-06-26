@@ -15,7 +15,6 @@ public class NewPuzzleManager {
             InterruptedException {
 
         HttpClient client = HttpClient.newHttpClient();
-
         Gson gson = new Gson();
         JsonObject item = new JsonObject();
         item.addProperty("imageurl",urlImage);
@@ -50,5 +49,6 @@ public class NewPuzzleManager {
                 HttpResponse.BodyHandlers.ofString());
         JsonElement element = gson.fromJson (response.body(), JsonElement.class);
         return element.getAsJsonObject();
+
     }
 }
