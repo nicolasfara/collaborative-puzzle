@@ -9,10 +9,7 @@ import io.vertx.kotlin.core.http.listenAwait
 import io.vertx.kotlin.core.json.get
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.kotlin.coroutines.dispatcher
-import io.vertx.kotlin.rabbitmq.basicConsumerAwait
-import io.vertx.kotlin.rabbitmq.queueBindAwait
-import io.vertx.kotlin.rabbitmq.queueDeclareAwait
-import io.vertx.kotlin.rabbitmq.startAwait
+import io.vertx.kotlin.rabbitmq.*
 import io.vertx.rabbitmq.RabbitMQClient
 import io.vertx.rabbitmq.RabbitMQOptions
 import it.unibo.pcd.puzzleservice.Routes
@@ -47,6 +44,7 @@ class WebServerVerticle : CoroutineVerticle() {
         router = Router.router(vertx)
         routerManager = Routes(context, rabbitMQClient, webClient)
 
+        rabbitMQClient.exchangeDeclareAwait(EXCHANGE_NAME, "topic", durable = true, autoDelete = false)
         rabbitMQClient.queueDeclareAwait(SWAP, durable = true, autoDelete = false, exclusive = false)
         rabbitMQClient.queueDeclareAwait(POINTER_QUEUE, durable = true, autoDelete = false, exclusive = false)
         rabbitMQClient.queueBindAwait(POINTER_QUEUE, EXCHANGE_NAME, "pointer.status")
