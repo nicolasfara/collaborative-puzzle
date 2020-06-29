@@ -20,25 +20,24 @@ import kotlinx.coroutines.launch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class NetManagerVerticle(private val puzzleBoard: PuzzleBoard) : CoroutineVerticle() {
+class NetManagerVerticle(private val puzzleBoard: PuzzleBoard, val puzzleid : String) : CoroutineVerticle() {
     private val logger: Logger = LoggerFactory.getLogger(NetManagerVerticle::class.java)
     private lateinit var webClient: WebClient
     private lateinit var wsClient: HttpClient
 
+
     override suspend fun start() {
         logger.info("Verticle deployed")
-        var puzzleid = ""
         webClient = WebClient.create(vertx)
         wsClient = vertx.createHttpClient()
 
         vertx.eventBus().localConsumer<String>(SWAP_ADDRESS).handler {
             val swapMessage = JsonObject(it.body())
-            puzzleid = swapMessage.getString("puzzleid")
             logger.info("New swap request")
             webClient.post(8080, "localhost", SWAP_URI).sendJson(swapMessage) {
                 logger.info("Response to swap")
             }
-            puzzleBoard.paintPuzzle()
+            puzzleBoard.paintPuzzle(puzzleBoard.board)
         }
 
         wsClient.webSocketAwait(8080, "localhost", PUZZLE_WS_URI + puzzleid).handler {
@@ -47,6 +46,7 @@ class NetManagerVerticle(private val puzzleBoard: PuzzleBoard) : CoroutineVertic
 //            CoroutineScope(context.dispatcher()).launch {
 //                vertx.eventBus().publish(UPDATE_STATE_ADDRESS, newPuzzleState.encode())
 //            }
+
             puzzleBoard.repaintPuzzle(newPuzzleState)
         }
 

@@ -35,6 +35,7 @@ class StartupVerticle(private val view: InitialFrame) : CoroutineVerticle() {
             CoroutineScope(context.dispatcher()).launch {
                 val result = webClient.post(8080, "localhost", Constants.JOIN_URI)
                         .sendJsonAwait(joinPuzzleMessage)
+
                 view.joinPuzzleBoard(result = result.bodyAsJsonObject())
             }
         }

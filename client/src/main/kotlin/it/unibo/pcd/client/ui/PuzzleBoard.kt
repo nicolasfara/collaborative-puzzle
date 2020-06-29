@@ -7,6 +7,7 @@ import it.unibo.pcd.client.controller.ViewController
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.GridLayout
+import java.awt.event.ActionEvent
 import java.awt.image.BufferedImage
 import java.awt.image.CropImageFilter
 import java.awt.image.FilteredImageSource
@@ -29,14 +30,15 @@ class PuzzleBoard(private val rows: Int,
                   private val state: JsonArray,
                   private val controller: ViewController) : JFrame() {
 
-    private val tiles: MutableList<Tile> = ArrayList()
+    private var tiles: MutableList<Tile> = ArrayList()
     private val info = JPanel()
     private val playerIdLabel = JLabel()
     private val puzzleIdLabel = JLabel()
     private val playerId = JLabel()
     private val puzzleId = JLabel()
     private val selectionManager: SelectionManager = SelectionManager(controller)
-    private val board = JPanel()
+    val board = JPanel()
+    private var currentState = mutableListOf<Int>()
 
     init {
         title = "Puzzle"
@@ -58,7 +60,7 @@ class PuzzleBoard(private val rows: Int,
         createTiles(imagePath)
         board.border = BorderFactory.createLineBorder(Color.gray)
         board.layout = GridLayout(rows, columns, 0, 0)
-        paintPuzzle()
+        paintPuzzle(board)
     }
 
     @Throws(IOException::class)
@@ -90,49 +92,91 @@ class PuzzleBoard(private val rows: Int,
                                 i * imageHeight / rows,
                                 imageWidth / columns,
                                 imageHeight / rows)))
+
                 tiles.add(Tile(imagePortion, position, randomPositions[position] as Int))
                 position++
             }
         }
+
+        val copy: MutableList<Tile> = ArrayList()
+        for (i in 0 until tiles.size) {
+            copy.add(i, tiles[state.getInteger(i)])
+        }
+        tiles = copy
+        for (i in 0 until state.size()) {
+            currentState.add(i, state.getInteger(i))
+        }
+
+        for (i in 0 until tiles.size) {
+            tiles[i].currentPosition = currentState[i]
+        }
     }
 
-    fun paintPuzzle() {
-        SwingUtilities.invokeLater(kotlinx.coroutines.Runnable {
-            board.removeAll()
-            tiles.sort()
-            tiles.forEach(Consumer { tile: Tile ->
-                val btn = TileButton(tile)
-                board.add(btn)
-                btn.border = BorderFactory.createLineBorder(Color.gray)
-                btn.addActionListener {
-                    try {
-                        selectionManager.selectTile(tile, puzzleId.text, playerId.text) {
-                            paintPuzzle()
-                            //checkSolution()
-                        }
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    } catch (e: InterruptedException) {
-                        e.printStackTrace()
-                    }
+    fun paintPuzzle(board: JPanel) {
+        var selectionActive = false
+        var selectedTile: Tile? = null
+
+        board.removeAll()
+        tiles.forEach(Consumer { tile: Tile? ->
+            val btn = TileButton(tile!!)
+            board.add(btn)
+            btn.border = BorderFactory.createLineBorder(Color.gray)
+            btn.addActionListener {
+                if (selectionActive) {
+                    selectionActive = false
+                    val message = JsonObject()
+                            .put("playerid", playerId.text)
+                            .put("puzzleid", puzzleId.text)
+                            .put("source", selectedTile!!.currentPosition.toString())
+                            .put("destination", tile.currentPosition.toString())
+
+                    swapTile(selectedTile, tile)
+                    paintPuzzle(board)
+                    controller.swap(message)
+                } else {
+                    selectionActive = true
+                    selectedTile = tile
                 }
-            })
-            pack()
-            setLocationRelativeTo(null)
+            }
         })
+        pack()
+        setLocationRelativeTo(null)
     }
 
-    //    private fun checkSolution() {
-//        if (tiles.stream().allMatch { obj: Tile -> obj.isInRightPlace() }) {
-//            JOptionPane.showMessageDialog(this, "Puzzle Completed!", "", JOptionPane.INFORMATION_MESSAGE)
-//        }
-//    }
+    fun swapTile(t1: Tile?, t2: Tile) {
+
+        val pos = t1!!.currentPosition
+        t1.currentPosition = (t2.currentPosition)
+        t2.currentPosition = pos
+        val first = t1.currentPosition
+        val second = t2.currentPosition
+        val tmp = first
+        currentState[currentState.indexOf(first)] = second
+        currentState[currentState.indexOf(second)] = tmp
+        tiles.sort()
+    }
+
+
     fun repaintPuzzle(newState: JsonObject) {
-        //TODO
-        /*Function call when other player swap puzzle*/
-        SwingUtilities.invokeLater(kotlinx.coroutines.Runnable {
-            
-        })
-    }
 
+        SwingUtilities.invokeLater {
+            val state = newState.getJsonArray("state")
+            val newState = mutableListOf<Int>()
+            for (i in 0 until state.size()) {
+                newState.add(state.getInteger(i))
+            }
+
+            val difference = mutableListOf<Int>()
+            for (i in 0 until currentState.size) {
+                if (currentState[i] != newState[i]) {
+                    difference.add(currentState[i])
+                }
+            }
+            if (difference.isNotEmpty() || !difference.isNullOrEmpty()) {
+                currentState = newState
+                selectionManager.swapTile(tiles[difference[0]], tiles[difference[1]])
+                paintPuzzle(board)
+            }
+        }
+    }
 }

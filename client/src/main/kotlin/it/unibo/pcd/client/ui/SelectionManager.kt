@@ -11,9 +11,8 @@ class SelectionManager(private val controller: ViewController) {
 
 
     @Throws(IOException::class, InterruptedException::class)
-    fun selectTile(tile: Tile, puzzleID: String,
-                   playerID: String,
-                   listener: () -> Unit) {
+    fun selectTile(tile: Tile, puzzleID : String, playerID: String,
+                   listener: ()-> Unit) {
         if (selectionActive) {
             selectionActive = false
             val message = JsonObject()
@@ -23,7 +22,6 @@ class SelectionManager(private val controller: ViewController) {
                     .put("destination", tile.currentPosition.toString())
 
             controller.swap(message)
-
             swapTile(selectedTile, tile)
 
         } else {
@@ -32,9 +30,11 @@ class SelectionManager(private val controller: ViewController) {
         }
     }
 
-    private fun swapTile(t1: Tile?, t2: Tile) {
+    fun swapTile(t1: Tile?, t2: Tile) {
         val pos = t1!!.currentPosition
         t1.currentPosition = (t2.currentPosition)
         t2.currentPosition = pos
     }
+
+
 }

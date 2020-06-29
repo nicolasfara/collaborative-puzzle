@@ -109,7 +109,7 @@ class InitialFrame(private val controller: ViewController, private val vertx: Ve
     }
 
     private fun deployNet(puzzle: PuzzleBoard) {
-        val ver = NetManagerVerticle(puzzle)
+        val ver = NetManagerVerticle(puzzle, puzzleIdText.text)
         vertx.deployVerticle(ver)
     }
 }
