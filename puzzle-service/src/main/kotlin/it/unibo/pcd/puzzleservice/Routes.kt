@@ -88,7 +88,7 @@ class Routes(private val ctx: Context, private val rabbitMQClient: RabbitMQClien
         }
 
         val leaveRequest = JsonObject.mapFrom(args)
-        val leaveRes = webClient.post(8082, "localhost", "/api/leave_puzzle")
+        val leaveRes = webClient.post(8082, "puzzle-manager", "/api/leave_puzzle")
                 .sendJsonObjectAwait(leaveRequest)
         val leaveResJson = leaveRes.bodyAsJsonObject()
 
@@ -109,7 +109,7 @@ class Routes(private val ctx: Context, private val rabbitMQClient: RabbitMQClien
                 }
 
                 val swapRequest = JsonObject.mapFrom(args)
-                val swapRes = webClient.post(8082, "localhost", "/api/swap")
+                val swapRes = webClient.post(8082, "puzzle-manager", "/api/swap")
                         .sendJsonObjectAwait(swapRequest)
                 val swapResJson = swapRes.bodyAsJsonObject()
                 routingContext.response()
