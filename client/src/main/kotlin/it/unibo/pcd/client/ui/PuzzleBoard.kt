@@ -36,7 +36,6 @@ class PuzzleBoard(private val rows: Int,
     private val puzzleIdLabel = JLabel()
     private val playerId = JLabel()
     private val puzzleId = JLabel()
-    private val selectionManager: SelectionManager = SelectionManager(controller)
     val board = JPanel()
     private var currentState = mutableListOf<Int>()
 
@@ -159,40 +158,23 @@ class PuzzleBoard(private val rows: Int,
         print("currentstate swap: $currentState")
         tiles.sort()
     }
-//
-//        val copy: MutableList<Tile> = ArrayList()
-//        for (i in 0 until tiles.size) {
-//            copy.add(i, tiles[currentState[i]])
-//            copy[i].currentPosition = currentState[i]
-//        }
-//        tiles = ArrayList(copy.map { it})
-////        for (i in 0 until tiles.size) {
-////            tiles[i].currentPosition = currentState[i]
-////        }
-//        println("CURRENT POSITION")
-//        for( i in 0 until tiles.size){
-//            print(tiles[i].currentPosition)
-//        }
-//        println("CurrentState after swap$currentState")
-
-
-
 
     fun repaintPuzzle(newState: JsonObject) {
-//        val state = newState.getJsonArray("state")
-//        val newState = mutableListOf<Int>()
-//        for (i in 0 until state.size()) {
-//            newState.add(state.getInteger(i))
-//        }
-//        val difference = mutableListOf<Int>()
-//        for (i in 0 until currentState.size) {
-//            if (currentState[i] != newState[i]) {
-//                difference.add(currentState[i])
-//            }
-//        }
-//        if (difference.isNotEmpty() || !difference.isNullOrEmpty()) {
-//            selectionManager.swapTile(tiles[difference[0]], tiles[difference[1]])
-//            paintPuzzle(board)
-//        }
+        /*
+        val state = newState.getJsonArray("state")
+        val newState = mutableListOf<Int>()
+        for (i in 0 until state.size()) {
+            newState.add(state.getInteger(i))
+        }
+        val difference = mutableListOf<Int>()
+        for (i in 0 until currentState.size) {
+            if (currentState[i] != newState[i]) {
+                difference.add(currentState[i])
+            }
+        }
+        if (difference.isNotEmpty() || !difference.isNullOrEmpty()) {
+            selectionManager.swapTile(tiles[difference[0]], tiles[difference[1]])
+            paintPuzzle(board)
+        }*/
     }
 }
