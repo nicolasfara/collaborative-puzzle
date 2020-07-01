@@ -106,7 +106,7 @@ class PuzzleBoard(private val rows: Int,
         for (i in 0 until state.size()) {
             currentState.add(i, state.getInteger(i))
         }
-
+        println("CurrentState initi $currentState")
         for (i in 0 until tiles.size) {
             tiles[i].currentPosition = currentState[i]
         }
@@ -117,6 +117,7 @@ class PuzzleBoard(private val rows: Int,
         var selectedTile: Tile? = null
 
         board.removeAll()
+        tiles.sort()
         tiles.forEach(Consumer { tile: Tile? ->
             val btn = TileButton(tile!!)
             board.add(btn)
@@ -146,37 +147,52 @@ class PuzzleBoard(private val rows: Int,
     fun swapTile(t1: Tile?, t2: Tile) {
 
         val pos = t1!!.currentPosition
-        t1.currentPosition = (t2.currentPosition)
-        t2.currentPosition = pos
         val first = t1.currentPosition
         val second = t2.currentPosition
         val tmp = first
-        currentState[currentState.indexOf(first)] = second
-        currentState[currentState.indexOf(second)] = tmp
+        /* NON ASSEGNA NULLA! */
+        currentState[currentState.indexOf(first)] = t2.currentPosition
+        currentState[currentState.indexOf(second)] = t1.currentPosition
+
+        t1.currentPosition = (t2.currentPosition)
+        t2.currentPosition = pos
+        print("currentstate swap: $currentState")
         tiles.sort()
     }
+//
+//        val copy: MutableList<Tile> = ArrayList()
+//        for (i in 0 until tiles.size) {
+//            copy.add(i, tiles[currentState[i]])
+//            copy[i].currentPosition = currentState[i]
+//        }
+//        tiles = ArrayList(copy.map { it})
+////        for (i in 0 until tiles.size) {
+////            tiles[i].currentPosition = currentState[i]
+////        }
+//        println("CURRENT POSITION")
+//        for( i in 0 until tiles.size){
+//            print(tiles[i].currentPosition)
+//        }
+//        println("CurrentState after swap$currentState")
+
+
 
 
     fun repaintPuzzle(newState: JsonObject) {
-
-        SwingUtilities.invokeLater {
-            val state = newState.getJsonArray("state")
-            val newState = mutableListOf<Int>()
-            for (i in 0 until state.size()) {
-                newState.add(state.getInteger(i))
-            }
-
-            val difference = mutableListOf<Int>()
-            for (i in 0 until currentState.size) {
-                if (currentState[i] != newState[i]) {
-                    difference.add(currentState[i])
-                }
-            }
-            if (difference.isNotEmpty() || !difference.isNullOrEmpty()) {
-                currentState = newState
-                selectionManager.swapTile(tiles[difference[0]], tiles[difference[1]])
-                paintPuzzle(board)
-            }
-        }
+//        val state = newState.getJsonArray("state")
+//        val newState = mutableListOf<Int>()
+//        for (i in 0 until state.size()) {
+//            newState.add(state.getInteger(i))
+//        }
+//        val difference = mutableListOf<Int>()
+//        for (i in 0 until currentState.size) {
+//            if (currentState[i] != newState[i]) {
+//                difference.add(currentState[i])
+//            }
+//        }
+//        if (difference.isNotEmpty() || !difference.isNullOrEmpty()) {
+//            selectionManager.swapTile(tiles[difference[0]], tiles[difference[1]])
+//            paintPuzzle(board)
+//        }
     }
 }
