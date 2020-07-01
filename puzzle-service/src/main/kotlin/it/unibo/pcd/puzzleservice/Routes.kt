@@ -43,11 +43,11 @@ class Routes(private val ctx: Context, private val rabbitMQClient: RabbitMQClien
                     val cols: String = params["cols"]
                 }
 
-                val newUserResult = webClient.get(8081, "localhost", "/api/new_user").sendAwait()
+                val newUserResult = webClient.get(8081, "player-service", "/api/new_user").sendAwait()
                 val userResultJson = newUserResult.bodyAsJsonObject()
 
                 val newPuzzleRequest = JsonObject.mapFrom(args).put("playerid", userResultJson.getString("playerid"))
-                val newPuzzleResult = webClient.post(8082, "localhost", "/api/new_puzzle")
+                val newPuzzleResult = webClient.post(8082, "puzzle-manager", "/api/new_puzzle")
                         .sendJsonObjectAwait(newPuzzleRequest)
 
                 val newPuzzleResultJson = newPuzzleResult.bodyAsJsonObject()
@@ -58,19 +58,17 @@ class Routes(private val ctx: Context, private val rabbitMQClient: RabbitMQClien
         }
     }
 
-
-
     suspend fun joinPuzzle(routingContext: RoutingContext) {
         routingContext.request().handler {
             CoroutineScope(ctx.dispatcher()).launch {
                 val params = it.toJsonObject()
                 val puzzleid: String = params["puzzleid"]
 
-                val newUserResult = webClient.get(8081, "localhost", "/api/new_user").sendAwait()
+                val newUserResult = webClient.get(8081, "player-service", "/api/new_user").sendAwait()
                 val userResultJson = newUserResult.bodyAsJsonObject()
 
                 val newPuzzleRequest = JsonObject().put("puzzleid", puzzleid).put("playerid", userResultJson.getString("playerid"))
-                val joinPuzzleRes = webClient.post(8082, "localhost", "/api/join_puzzle")
+                val joinPuzzleRes = webClient.post(8082, "puzzle-manager", "/api/join_puzzle")
                         .sendJsonObjectAwait(newPuzzleRequest)
                 val joinPuzzleResJson = joinPuzzleRes.bodyAsJsonObject()
 

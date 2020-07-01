@@ -1,5 +1,6 @@
 package it.unibo.pcd.puzzleservice.verticles
 
+import io.github.cdimascio.dotenv.dotenv
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.Route
 import io.vertx.ext.web.Router
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory
 
 class WebServerVerticle : CoroutineVerticle() {
     private val logger: Logger = LoggerFactory.getLogger(WebServerVerticle::class.java)
+    private val dotenv = dotenv()
     private val rabbitConfig = RabbitMQOptions()
     private lateinit var webClient: WebClient
     private lateinit var router: Router
@@ -37,8 +39,9 @@ class WebServerVerticle : CoroutineVerticle() {
 
         webClient = WebClient.create(vertx)
 
-        rabbitConfig.uri = "amqp://guest:guest@localhost"
-        rabbitMQClient = RabbitMQClient.create(vertx, config)
+        logger.info("Connect to ${dotenv["RABBITMQ_URI"]}")
+        rabbitConfig.uri = dotenv["RABBITMQ_URI"]
+        rabbitMQClient = RabbitMQClient.create(vertx, rabbitConfig)
         rabbitMQClient.startAwait()
 
         router = Router.router(vertx)
@@ -91,7 +94,7 @@ class WebServerVerticle : CoroutineVerticle() {
                     }
                 }
                 .requestHandler(router)
-                .listenAwait(8080, "localhost")
+                .listenAwait(8080, "puzzle-service")
     }
 
     private fun Route.coroutineHandler(fn: suspend (RoutingContext) -> Unit) {

@@ -1,5 +1,7 @@
 package it.unibo.pcd.puzzlemanager.verticles
 
+import io.github.cdimascio.dotenv.Dotenv
+import io.github.cdimascio.dotenv.dotenv
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
 import io.vertx.kotlin.coroutines.CoroutineVerticle
@@ -11,11 +13,12 @@ import org.slf4j.LoggerFactory
 class DataStoreVerticle : CoroutineVerticle() {
     private lateinit var mongoClient: MongoClient
     private lateinit var dbManager: PuzzleDbManager
+    private val dotenv: Dotenv = dotenv()
     private val logger = LoggerFactory.getLogger("DataStoreVerticle")
 
     override suspend fun start() {
         val mongoConfig = JsonObject().put("db_name", "puzzle_manager")
-                .put("connection_string", "mongodb://localhost:27017")
+                .put("connection_string", dotenv["MONGODB_URI"])
         mongoClient = MongoClient.create(vertx, mongoConfig)
         dbManager = PuzzleDbManager(mongoClient)
 

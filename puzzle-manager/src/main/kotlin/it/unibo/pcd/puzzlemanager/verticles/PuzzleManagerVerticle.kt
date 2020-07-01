@@ -1,5 +1,7 @@
 package it.unibo.pcd.puzzlemanager.verticles
 
+import io.github.cdimascio.dotenv.dotenv
+import io.github.cdimascio.dotenv.Dotenv
 import io.vertx.ext.web.Route
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
@@ -17,6 +19,7 @@ import org.slf4j.LoggerFactory
 
 class PuzzleManagerVerticle : CoroutineVerticle() {
     private val logger = LoggerFactory.getLogger("PuzzleManagerVerticle")
+    private val dotenv: Dotenv = dotenv()
     private lateinit var router: Router
     private lateinit var routerManager: RoutesManager
     private lateinit var rabbitMQClient: RabbitMQClient
@@ -24,8 +27,8 @@ class PuzzleManagerVerticle : CoroutineVerticle() {
 
     override suspend fun start() {
 
-        rabbitConfig.uri = "amqp://guest:guest@localhost"
-        rabbitMQClient = RabbitMQClient.create(vertx, config)
+        rabbitConfig.uri = dotenv["RABBITMQ_URI"]
+        rabbitMQClient = RabbitMQClient.create(vertx, rabbitConfig)
         rabbitMQClient.startAwait()
         rabbitMQClient.queueDeclareAwait(Constants.SWAP, durable = true,exclusive = false, autoDelete = false)
         router = Router.router(vertx)
@@ -37,15 +40,15 @@ class PuzzleManagerVerticle : CoroutineVerticle() {
 
         vertx.createHttpServer()
                 .requestHandler(router)
-                .listenAwait(8082)
+                .listenAwait(8082, "puzzle-manager")
 
     }
     private fun Route.coroutineHandler(fn:suspend (RoutingContext)->Unit){
         handler{
             launch(vertx.dispatcher()){
-                try{
+                try {
                     fn(it)
-                }catch (ex:Exception){
+                } catch (ex:Exception){
                     it.fail(ex)
                 }
             }
