@@ -1,42 +1,41 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    id("org.springframework.boot") version "2.3.1.RELEASE"
-    id("io.spring.dependency-management") version "1.0.9.RELEASE"
     kotlin("jvm")
-    kotlin("plugin.spring") version "1.3.72"
 }
 
-group = "it.unibo.pcd"
-version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_11
+group = "it.unibo.pcd.collaborativepuzzle"
+version = "1.0"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.boot:spring-boot-starter-mustache")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    implementation(kotlin("stdlib-jdk8"))
+
+    with("io.vertx") {
+        implementation("$this:vertx-core:3.9.1")
+        implementation("$this:vertx-lang-kotlin:3.9.1")
+        implementation("$this:vertx-web:3.9.1")
+        implementation("$this:vertx-web-client:3.9.1")
+        implementation("$this:vertx-rabbitmq-client:3.9.1")
+        implementation("$this:vertx-lang-kotlin-coroutines:3.9.1")
     }
-    testImplementation("io.projectreactor:reactor-test")
+
+    with("com.viartemev") {
+        implementation("$this:the-white-rabbit:0.0.6")
+    }
+
+    with("org.slf4j") {
+        implementation("$this:slf4j-api:1.7.30")
+        implementation("$this:slf4j-simple:1.7.30")
+    }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+tasks {
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "1.8"
     }
 }

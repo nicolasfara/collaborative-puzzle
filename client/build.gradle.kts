@@ -1,5 +1,4 @@
 plugins {
-    java
     kotlin("jvm")
 }
 
@@ -12,12 +11,11 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    testCompile("junit", "junit", "4.12")
+    implementation("com.google.code.gson:gson:2.8.6")
+    implementation("io.vertx:vertx-web:3.9.1")
+    implementation("io.vertx:vertx-web-client:3.9.1")
 }
 
-configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-}
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
