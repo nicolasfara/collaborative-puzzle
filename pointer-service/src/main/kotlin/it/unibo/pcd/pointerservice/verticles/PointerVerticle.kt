@@ -1,5 +1,6 @@
 package it.unibo.pcd.pointerservice.verticles
 
+import io.github.cdimascio.dotenv.dotenv
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.eventbus.requestAwait
 import io.vertx.kotlin.core.json.get
@@ -18,11 +19,12 @@ import org.slf4j.LoggerFactory
 class PointerVerticle: CoroutineVerticle() {
     private val logger = LoggerFactory.getLogger("PointerVerticle")
     private val rabbitConfig = RabbitMQOptions()
+    private val dotenv = dotenv()
     private lateinit var client: RabbitMQClient
 
     override suspend fun start() {
-        rabbitConfig.uri = "amqp://guest:guest@loclahost"
-        client = RabbitMQClient.create(vertx, config)
+        rabbitConfig.uri = dotenv["RABBITMQ_URI"]
+        client = RabbitMQClient.create(vertx, rabbitConfig)
         client.startAwait()
 
         client.queueDeclareAwait(POINTER_QUEUE, durable = true, exclusive = false, autoDelete = false)

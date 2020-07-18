@@ -13,6 +13,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     testCompile("junit", "junit", "4.12")
+
+    implementation("io.github.cdimascio:java-dotenv:5.2.1")
 }
 
 configure<JavaPluginConvention> {
