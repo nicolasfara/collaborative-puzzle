@@ -19,7 +19,6 @@ fun main() {
         }
     }
     with(DeploymentOptions()) {
-        instances = 1
         deployVerticle("it.unibo.pcd.playerservice.verticles.PlayerVerticle")
         deployVerticle("it.unibo.pcd.playerservice.verticles.DataPlayerVerticle")
     }

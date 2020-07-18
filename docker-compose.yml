@@ -1,0 +1,91 @@
+version: '2'
+
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.6-management-alpine
+    hostname: rabbitmq
+    volumes:
+      - rabbit1:/var/lib/rabbitmq
+      - ./enabled_plugins:/etc/rabbitmq/enabled_plugins
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "EiX0hn4TrHYc/cQ/I99Q0A=="
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+      #RABBITMQ_DEFAULT_VHOST: "/"
+    networks:
+      - backend
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  puzzle-service:
+    build: ./puzzle-service
+    ports:
+      - 8080:8080
+    restart: on-failure
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+
+  puzzle-manager-db:
+    image: mongo:latest
+    volumes:
+      - db-data-puzzle-manager:/data/db
+      - mongo-config-puzzle-manager:/data/configdb
+    networks:
+      - backend
+  puzzle-manager:
+    build: ./puzzle-manager
+    restart: on-failure
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+      - puzzle-manager-db
+
+  player-service-db:
+    image: mongo:latest
+    volumes:
+      - db-data-player-service:/data/db
+      - mongo-config-player-service:/data/configdb
+    networks:
+      - backend
+  player-service:
+    build: ./player-service
+    restart: on-failure
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+      - player-service-db
+
+  pointer-service-db:
+    image: mongo:latest
+    volumes:
+      - db-data-pointer-service:/data/db
+      - mongo-config-pointer-service:/data/configdb
+    networks:
+      - backend
+  pointer-service:
+    build: ./pointer-service
+    restart: on-failure
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+      - pointer-service-db
+
+volumes:
+  rabbit1:
+  db-data-puzzle-manager:
+  mongo-config-puzzle-manager:
+  db-data-player-service:
+  mongo-config-player-service:
+  db-data-pointer-service:
+  mongo-config-pointer-service:
+
+networks:
+    backend:
+      driver: bridge

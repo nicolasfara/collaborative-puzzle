@@ -19,7 +19,6 @@ fun main() {
         }
     }
     with(DeploymentOptions()) {
-        instances = 1
         deployVerticle("it.unibo.pcd.puzzlemanager.verticles.PuzzleManagerVerticle")
         deployVerticle("it.unibo.pcd.puzzlemanager.verticles.DataStoreVerticle")
     }

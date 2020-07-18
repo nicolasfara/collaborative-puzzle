@@ -1,5 +1,7 @@
 package it.unibo.pcd.pointerservice.verticles
 
+import io.github.cdimascio.dotenv.Dotenv
+import io.github.cdimascio.dotenv.dotenv
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
 import io.vertx.ext.mongo.UpdateOptions
@@ -13,10 +15,11 @@ import org.slf4j.LoggerFactory
 class DataStoreVerticle: CoroutineVerticle() {
     private lateinit var mongoClient: MongoClient
     private val logger = LoggerFactory.getLogger("DataStoreVerticle")
+    private val dotenv: Dotenv = dotenv()
 
     override suspend fun start() {
         val mongoConfig = JsonObject().put("db_name", "pointer_service")
-                .put("connection_string", "mongodb://localhost:27017")
+                .put("connection_string", dotenv["MONGODB_URI"])
         mongoClient = MongoClient.create(vertx, mongoConfig)
 
         vertx.eventBus().localConsumer<String>(Constants.NEW_POINTER_ADDRESS).handler {
